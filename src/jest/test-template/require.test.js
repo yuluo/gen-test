@@ -1,6 +1,7 @@
 'use strict'
 const request = require('request-promise-native');
 const utils = require('../utils');
+const globalConfig = require('../../../config/global-config.json');
 
 const config = {
     'mediaType': 'application/json',
@@ -32,6 +33,26 @@ const template = {
     "status": "available"
   }
 
+  // move this to gloabl setup
+  expect.extend({
+    toBeOneOf(received, array) {
+      const pass = array.includes(received)
+      if (pass) {
+        return {
+          message: () =>
+            `expected ${received} not to be one of ${array}`,
+          pass: true,
+        };
+      } else {
+        return {
+          message: () =>
+            `expected ${received} to be one of ${array}`,
+          pass: false,
+        };
+      }
+    }
+  });
+
 describe('required test', () => {
     let token = '';
     let options = {};
@@ -58,7 +79,7 @@ describe('required test', () => {
     test('postive', done => {
         options.body = template;
         request(options, (err, response, body) => {
-            expect(response.statusCode).toBe(200);
+            expect(response.statusCode).toBeOneOf(globalConfig.successCodes);
             done();
         });
     });
