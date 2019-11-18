@@ -4,7 +4,8 @@
   "description": "Generate API test case for openAPI and GraphQL spec",
   "main": "handler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "prettier": "./node_modules/.bin/prettier --write ./**/*.js ./**/*.json"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   "homepage": "https://github.com/yuluo/gen-test#readme",
   "devDependencies": {
     "jest": "^24.9.0",
+    "prettier": "^1.19.1",
     "serverless-offline": "^5.12.0"
   },
   "dependencies": {
