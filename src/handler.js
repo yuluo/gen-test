@@ -16,40 +16,66 @@ module.exports.parseSpec = async event => {
         )[0];
         console.log(`${key} ${pathKey}`);
         if (jsonSchema) {
-          processJsonSchema(jsonSchema);
+          //console.log(JSON.stringify(jsonSchema, null, 2));
+          let template = generatePayloadTemplate(jsonSchema.properties);
+          console.log(JSON.stringify(template, null, 2));
         }
       }
     });
   });
 };
 
-function processJsonSchema(schema) {
-  console.log(JSON.stringify(schema, null, 2));
 
-  let response = {
-    template: {},
-    required: []
-  };
+function generatePayloadTemplate(properties) {
+  let payloadTemplate = {};
+  Object.keys(properties).forEach( key => {
+    let type = properties[key].type;
+    if (type === "object") {
+      payloadTemplate[key] = generatePayloadTemplate(properties[key].properties);
+    } else if(type === "array") {
+      //handle array here
+      //payloadTemplate[key] = generatePayloadTemplate
+    } else if (type === "string") {
+      payloadTemplate[key] = generateStringTemplate(properties[key])
+    } else {
+      payloadTemplate[key] = typeTemplate[type];
+    }
+  })
 
-  response.required = schema.required;
+  return payloadTemplate;
 }
 
-function generateTemplate(schema) {
-  if (schema.type === "object") {
-  } else if (schema.type === "integer") {
-  } else if (schema.type === "number") {
-  } else if (schema.type === "boolean") {
-  } else {
-    if (schema.format === "byte") {
-    } else if (schema.format === "binary") {
-    } else if (schema.format === "date-time") {
-    } else if (schema.format === "date") {
-    } else if (schema.format === "password") {
-    } else {
-    }
+function generateStringTemplate(stringProperty) {
+  let stringTemplate = "";
+  if(stringProperty.enum) {
+    stringTemplate = `randomEnum([${stringProperty.enum.toString()}])`
   }
+  else if(stringProperty.format) {
+    stringTemplate = typeTemplate.string[stringProperty.format];
+  } else {
+    stringTemplate= "randomString()"
+  }
+
+  return stringTemplate;
 }
 
 const typeTemplate = {
-  integer: "randomInteger()"
+  "integer": "randomInteger()",
+  "number": "randomNumber()",
+  "boolean": "randomBoolean()",
+  "string": {
+    "byte": "randomByte()",
+    "binary": "randomBinary()",
+    "date-time": "randomDatetime()",
+    "date": "randomDate()",
+    "password": "randomPassword()"
+  }
 };
+
+
+function generateRequireTest() {
+  //scaffolding
+  //generate positive test
+
+  //generate negative test for-loop
+}
