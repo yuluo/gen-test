@@ -1,5 +1,5 @@
 ---
-to: generated/<%= endpoint %>/require-test/require.test.js
+to: generated/<%= endpoint %>/<%= operation %>/require-test/require.test.js
 inject: true
 after: test cases
 ---

@@ -1,25 +1,29 @@
 "use strict";
-const Jsonpath = require("jsonpath");
-const SwaggerParser = require("swagger-parser");
-const RandomGenerator = require("./libs/random-generator");
+const jp = require("jsonpath");
+const sp = require("swagger-parser");
+const rg = require("./libs/random-generator");
+const shell = require('shelljs');
+const fs = require('fs')
 
 module.exports.parseSpec = async event => {
-  const apiObject = await SwaggerParser.dereference(event);
+  const apiObject = await sp.dereference(event);
   const paths = apiObject.paths;
+
+  shell.rm("-rf", "generated/*");
 
   Object.keys(paths).forEach(pathKey => {
     const path = paths[pathKey];
     Object.keys(path).forEach(key => {
       if (key === "post" && pathKey === "/pet") {
-        const jsonSchema = Jsonpath.query(
+        const jsonSchema = jp.query(
           path[key],
           "$['requestBody']['content']['application/json']['schema']"
         )[0];
         console.log(`${key} ${pathKey}`);
         if (jsonSchema) {
           //console.log(JSON.stringify(jsonSchema, null, 2));
-          let template = _generatePayloadTemplate(jsonSchema.properties);
-          console.log(JSON.stringify(template, null, 2));
+          //let template = _generatePayloadTemplate(jsonSchema.properties);
+          _generateRequireTest(pathKey, key, jsonSchema);
         }
       }
     });
@@ -47,19 +51,19 @@ function _processProperty(type, property) {
   } else if (type === "string") {
     return _generateStringTemplate(property)
   } else {
-    return RandomGenerator[typeTemplate[type]].call(null);
+    return rg[typeTemplate[type]].call(null);
   }
 }
 
 function _generateStringTemplate(stringProperty) {
   let stringTemplate = "";
   if(stringProperty.enum) {
-    stringTemplate = RandomGenerator.randomEnum(stringProperty.enum);
+    stringTemplate = rg.randomEnum(stringProperty.enum);
   } else if(stringProperty.format) {
-    console.log( RandomGenerator[typeTemplate.string[stringProperty.format]])
-    stringTemplate = RandomGenerator[typeTemplate.string[stringProperty.format]].call(null);
+    console.log( rg[typeTemplate.string[stringProperty.format]])
+    stringTemplate = rg[typeTemplate.string[stringProperty.format]].call(null);
   } else {
-    stringTemplate= RandomGenerator.randomString();
+    stringTemplate= rg.randomString();
   }
 
   return stringTemplate;
@@ -79,9 +83,24 @@ const typeTemplate = {
 };
 
 
-function generateRequireTest(schema) {
+function _generateRequireTest(endpoint, operation, schema) {
   //scaffolding
+  const scaffoldingCmd = `"./node_modules/.bin/hygen" scaffold new --endpoint ${endpoint} --operation ${operation}  --type require`;
+  shell.exec(scaffoldingCmd);
+
   //generate positive test
+  let template = _generatePayloadTemplate(schema.properties);
+  writeFile(`./generated/${endpoint}/${operation}/require-test/payload-1.json`, JSON.stringify(template, null, 2));
+  const testCaseCmd = `"./node_modules/.bin/hygen" require-test new --endpoint ${endpoint} --operation ${operation}  --name positive --datafile payload-1.json --codes successCodes`;
+  shell.exec(testCaseCmd);
 
   //generate negative test for-loop
+}
+
+function writeFile(name, content) {
+  fs.writeFile(name, content, 'ascii', (err) => {
+    if (err) {
+      throw err;
+    }
+  });
 }

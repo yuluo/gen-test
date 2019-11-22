@@ -1,11 +1,11 @@
 ---
-to: generated/<%= endpoint %>/<%= type %>-test/<%= type %>.test.js
+to: generated/<%= endpoint %>/<%= operation %>/<%= type %>-test/<%= type %>.test.js
 ---
 "use strict"
-const globalConfig = require("../../../config/global-config.json");
-const globalSetup = require("../../../src/jest.global-setup");
+const globalConfig = require("../../../../config/global-config.json");
+const globalSetup = require("../../../../src/jest.global-setup");
 const request = require("request-promise-native");
-const utils = require("../../../src/test-utils");
+const utils = require("../../../../src/test-utils");
 const testConfig = require("./testConfig.json")
 
 describe("<%= endpoint %> <%= type %> test", () => {

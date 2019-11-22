@@ -1,17 +1,17 @@
-const RandomString = require("randomstring");
+const rs = require("randomstring");
 
 function randomBinary() {
-    return RandomString.generate({
+    return rs.generate({
         charset: '01'
     });
 }
 
 function randomBoolean() {
-    return RandomString.generate().length % 2 === 0;
+    return rs.generate().length % 2 === 0;
 }
 
 function randomByte() {
-    return RandomString.generate({
+    return rs.generate({
         charset: 'hex'
     });
 }
@@ -40,7 +40,7 @@ function randomNumber(min = 0, max = 10000) {
 }
 
 function randomString() {
-    return RandomString.generate();
+    return rs.generate();
 }
 
 module.exports = {
