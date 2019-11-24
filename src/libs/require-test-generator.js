@@ -13,7 +13,7 @@ function generateTest(endpoint, operation, schema) {
   shell.exec(scaffoldingCmd);
 
   //generate positive test
-  let template = pg.generatePayloadTemplate(schema.properties);
+  const template = pg.generatePayloadTemplate(schema.properties);
   utils.writeFile(
     `${targetDir}/payload-1.json`,
     JSON.stringify(template, null, 2)
@@ -22,6 +22,20 @@ function generateTest(endpoint, operation, schema) {
   shell.exec(testCaseCmd);
 
   //generate negative test for-loop
+    schema.required.forEach( (property, index) => {
+        const payloadFile = `payload-${index + 2}.json`;
+        const testName = `"negative-${index} missing ${property}"`;
+        let payload = {...template};
+        delete payload[property];
+
+        utils.writeFile(
+            `${targetDir}/${payloadFile}`,
+            JSON.stringify(payload, null, 2)
+        );
+        const testCaseCmd = `${hygen} require-test new ${endpointParam} ${operationParam} --name ${testName} --datafile ${payloadFile} --codes failCodes`;
+        shell.exec(testCaseCmd);
+    })
+
 }
 
 module.exports = {

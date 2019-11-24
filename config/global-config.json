@@ -1,3 +1,4 @@
 {
-  "successCodes": [200, 204, 201]
+  "successCodes": [200, 204, 201],
+  "failCodes": [405, 400]
 }
