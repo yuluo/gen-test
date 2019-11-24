@@ -3,12 +3,20 @@ const jp = require("jsonpath");
 const sp = require("swagger-parser");
 const shell = require("shelljs");
 const rtg = require("./libs/require-test-generator");
+const utils = require("./libs/utils");
 
 module.exports.parseSpec = async event => {
   const apiObject = await sp.dereference(event);
   const paths = apiObject.paths;
-
+  
   shell.rm("-rf", "generated/*");
+
+  //need to handle multiple servers
+  const testConfig = {
+    baseUrl: `http://localhost:8080${apiObject.servers[0].url}`
+  }
+
+  utils.writeFile(`./generated/test-config.json`, JSON.stringify(testConfig, null, 2));
 
   Object.keys(paths).forEach(pathKey => {
     const path = paths[pathKey];

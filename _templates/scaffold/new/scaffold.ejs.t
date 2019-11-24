@@ -3,10 +3,10 @@ to: generated/<%= endpoint %>/<%= operation %>/<%= type %>-test/<%= type %>.test
 ---
 "use strict"
 const globalConfig = require("../../../../config/global-config.json");
-const globalSetup = require("../../../../src/jest.global-setup");
+const globalSetup = require("../../../../src/test-libs/jest.global-setup");
 const request = require("request-promise-native");
-const utils = require("../../../../src/test-utils");
-const testConfig = require("./testConfig.json")
+const utils = require("../../../../src/test-libs/test-utils");
+const testConfig = require("../../../test-config.json")
 
 describe("<%= endpoint %> <%= type %> test", () => {
   let token = "";
