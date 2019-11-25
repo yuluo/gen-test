@@ -10,6 +10,9 @@ module.exports.parseSpec = async event => {
   const paths = apiObject.paths;
 
   shell.rm("-rf", "generated/*");
+  shell.mkdir("-p", "generated/node_modules");
+  shell.cp("-R", "src/test-libs/", "generated/node_modules");
+  shell.cp("-R", "config", "generated/node_modules");
 
   //need to handle multiple servers
   const testConfig = {
@@ -17,7 +20,7 @@ module.exports.parseSpec = async event => {
   };
 
   utils.writeFile(
-    `./generated/test-config.json`,
+    `./generated/node_modules/config/test-config.json`,
     JSON.stringify(testConfig, null, 2)
   );
 

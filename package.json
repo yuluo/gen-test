@@ -2,7 +2,7 @@
   "name": "gen-test",
   "version": "1.0.0",
   "description": "Generate API test case for openAPI and GraphQL spec",
-  "main": "handler.js",
+  "main": "src/handler.js",
   "scripts": {
     "test": "jest",
     "prettier": "./node_modules/.bin/prettier --write ./**/*.js ./**/*.json"

@@ -17,7 +17,7 @@ function randomByte() {
 }
 
 function randomDatetime() {
-  return new Date().toString();
+  return new Date().toISOString();
 }
 
 function randomDate() {

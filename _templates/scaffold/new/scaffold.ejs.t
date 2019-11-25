@@ -2,11 +2,11 @@
 to: generated/<%= endpoint %>/<%= operation %>/<%= type %>-test/<%= type %>.test.js
 ---
 "use strict"
-const globalConfig = require("../../../../config/global-config.json");
-const globalSetup = require("../../../../src/test-libs/jest.global-setup");
+const globalConfig = require("config/global-config.json");
+const globalSetup = require("test-libs/jest.global-setup");
+const utils = require("test-libs/test-utils");
+const testConfig = require("config/test-config.json");
 const request = require("request");
-const utils = require("../../../../src/test-libs/test-utils");
-const testConfig = require("../../../test-config.json")
 
 describe("<%= operation %> <%= endpoint %> <%= type %> test", () => {
   let token = "";
