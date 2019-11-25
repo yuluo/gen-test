@@ -17,18 +17,18 @@ function generatePayloadTemplate(properties) {
   let payloadTemplate = {};
   Object.keys(properties).forEach(key => {
     let type = properties[key].type;
-    payloadTemplate[key] = _processProperty(type, properties[key]);
+    payloadTemplate[key] = processProperty(type, properties[key]);
   });
 
   return payloadTemplate;
 }
 
-function _processProperty(type, property) {
+function processProperty(type, property) {
   if (type === "object") {
     return generatePayloadTemplate(property.properties);
   } else if (type === "array") {
     let array = [];
-    array.push(_processProperty(property.items.type, property.items));
+    array.push(processProperty(property.items.type, property.items));
     return array;
   } else if (type === "string") {
     return _generateStringTemplate(property);
@@ -52,5 +52,6 @@ function _generateStringTemplate(stringProperty) {
 }
 
 module.exports = {
-  generatePayloadTemplate
+  generatePayloadTemplate,
+  processProperty
 };
