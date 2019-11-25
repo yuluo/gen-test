@@ -2,9 +2,10 @@
   "name": "gen-test",
   "version": "1.0.0",
   "description": "Generate API test case for openAPI and GraphQL spec",
-  "main": "handler.js",
+  "main": "src/handler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "prettier": "./node_modules/.bin/prettier --write ./**/*.js ./**/*.json"
   },
   "repository": {
     "type": "git",
@@ -18,9 +19,16 @@
   "homepage": "https://github.com/yuluo/gen-test#readme",
   "devDependencies": {
     "jest": "^24.9.0",
+    "prettier": "^1.19.1",
     "serverless-offline": "^5.12.0"
   },
   "dependencies": {
-    "supertest": "^4.0.2"
+    "hygen": "^5.0.3",
+    "jsonpath": "^1.0.2",
+    "randomstring": "^1.1.5",
+    "request": "^2.88.0",
+    "shelljs": "^0.8.3",
+    "supertest": "^4.0.2",
+    "swagger-parser": "^8.0.3"
   }
 }

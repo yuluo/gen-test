@@ -1,0 +1,4237 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "coaching-member APIs",
+    "description": "APIs that handles all member-related functions in the Rally Coaching\nplatform, such as member profile creation, updates, and deletions to member eligibility\nand program status info.",
+    "contact": {
+      "name": "Coaching Engineering",
+      "url": "https://github.com/orgs/AudaxHealthInc/teams/globo-gym",
+      "email": "coaching-eng@rallyhealth.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "relative server URL"
+    },
+    {
+      "url": "https://coaching-member-web.rich-song.rally-dev.com",
+      "description": "Coaching long-living dev environment server URL"
+    },
+    {
+      "url": "http://localhost:9231",
+      "description": "local development server URL"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Admin"
+    },
+    {
+      "name": "External"
+    },
+    {
+      "name": "Internal"
+    },
+    {
+      "name": "Member"
+    }
+  ],
+  "paths": {
+    "/admin/member/v1/u/{rallyId}/qualification/profile": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get a member's qualification profile.",
+        "operationId": "getQualificationProfile-Admin",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "query",
+            "description": "Program ID to fetch qualification profile for",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched member's qualification profile.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartialQualification"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No qualification profile for specified rally ID and program\nID."
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/member/v1/u/{rallyId}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get the member account summary for a specified rally ID.",
+        "operationId": "getMemberAccountSummary-Admin",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "query",
+            "description": "If specified, then returns the user's program profile associated\nwith the specified program ID. Otherwise, omits the program profile from\nthe response schema.",
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched member account summary.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberAccountSummary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No data found for specified rally ID."
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update a member's email.",
+        "operationId": "updateMemberEmail",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing new e-mail address",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemberEmailRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully updated member's e-mail address."
+          },
+          "400": {
+            "description": "Updating non-editable fields prevented, e-mail address is invalid,\nprogram ID mismatches, or bad request body. Please check response body\nand/or logs to confirm exact error and double-check your request body\nschema.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or member's program track status not found. Please check\nresponse body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Deletes a Coaching Member who has not qualified yet for any program\ntrack.",
+        "operationId": "deleteMember",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted Coaching Member account"
+          },
+          "403": {
+            "description": "Deletion not allowed"
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/member/v1/u/{rallyId}/achievementEvent": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Send member program data to the ESRA Achievement API.",
+        "operationId": "sendMemberDataToAchievement",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully sent member data to ESRA Achievement API."
+          },
+          "404": {
+            "description": "Could not find member account, member's program track status,\nor member's program profile. Please check response body and/or logs to\nconfirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/member/v1/u/{rallyId}/lastLoginTimestamp": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update the last login field for a member",
+        "operationId": "updateMemberLastLogin",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "timestamp",
+            "in": "query",
+            "description": "If specified, it is the new timestamp for the member's last login\nfield.",
+            "schema": {
+              "$ref": "#/components/schemas/UnixTimestamp"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully updated member's last login field."
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ext/rest/member/v1/u/{rallyId}": {
+      "put": {
+        "tags": [
+          "External"
+        ],
+        "summary": "Update a member's profile.",
+        "operationId": "updateMemberProfile-External",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing member profile information to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberProfile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully updated a member's profile."
+          },
+          "400": {
+            "description": "Updating non-editable fields prevented, e-mail address is invalid,\nprogram ID mismatches, or bad request body. Please check response body\nand/or logs to confirm exact error and double-check your request body\nschema.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or member's program track status not found. Please check\nresponse body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ext/rest/member/v1/u/{rallyId}/programs/{programId}": {
+      "get": {
+        "tags": [
+          "External"
+        ],
+        "summary": "Get info on single member account for external clients.",
+        "operationId": "getExternalMemberInfo",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched external member info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalMemberInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Could not find member."
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ext/rest/member/v1/u/{rallyId}/programs/{programId}/profile": {
+      "put": {
+        "tags": [
+          "External"
+        ],
+        "summary": "Update a member's program profile.",
+        "operationId": "updateProgramProfile-External",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing updated program profile",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberProgramProfile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully updated member program profile."
+          },
+          "400": {
+            "description": "Updating non-editable fields prevented, e-mail address is invalid,\nprogram ID mismatches, or bad request body. Please check response body\nand/or logs to confirm exact error and double-check your request body\nschema.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or member's program track status not found. Please check\nresponse body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ext/rest/member/v1/u/{rallyId}/programs/{programId}/status": {
+      "put": {
+        "tags": [
+          "External"
+        ],
+        "summary": "Reset a member's track ID and status under certain conditions.",
+        "description": "Allows resetting member track ID and status under 2 conditions: <ol>\n  <li>\n    Someone may have been disqualified when they should not have. This API provides the ability to reset the member\n    to a needsQualification status.\n  </li>\n  <li>\n    If member is stuck in non-IWS track and needs classroom, then the API allows changing the member's track ID to\n    an IWS track ID.\n  </li>\n</ol>",
+        "operationId": "resetMemberTrackStatus",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing information to update track status",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrackStatusUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully updated the member's track status."
+          },
+          "400": {
+            "description": "Bad request. Please double-check your request body schema.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Member does not satisfy the conditions to allow track status\nreset.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ext/rest/member/v1/u/{rallyId}/programs/{programId}/programStatus": {
+      "put": {
+        "tags": [
+          "External"
+        ],
+        "summary": "Transition a member's program track status.",
+        "description": "Health Cloud needs the ability to update a member's program status.\nThis API currently provides the ability to update the member Program Status\nto a Disenrolled, NeedsQualification, NeedsClassroom and Completed status\nfor now. TrackId is required if current enrollment status is not Disqualified\nor NeedsQualification.",
+        "operationId": "transitionMemberProgramTrackStatus-External",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing information to transition a member's\nprogram track status",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemberProgramTrackStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully updated the member's program track status."
+          },
+          "400": {
+            "description": "Current enrollment status input does not match member's current\nenrollment status or missing trackId in the request when current enrollment\nstatus is other than Disqualified or NeedsQualification",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Specified transition from currentEnrollmentStatus to newEnrollmentStatus\nis not allowed.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Could not find member's account or member's program track status.\nPlease check response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "coaching-classrooms API or other unexpected server-side error.\nPlease check response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ext/rest/member/v1/u/{rallyId}/programs/{programId}/tracks/{trackId}/status": {
+      "put": {
+        "tags": [
+          "External"
+        ],
+        "summary": "Update a member's program track status.",
+        "description": "Health Cloud needs the ability to update a member's program track\nstatus. This API currently provides the ability to update the member Program\nTrack Status to a disenrolled, NeedsQualification, NeedsClassroom and Completed\nstatus for now.",
+        "operationId": "updateMemberProgramTrackStatus-External",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          },
+          {
+            "name": "trackId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TrackId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing information to update a member's program\ntrack status",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemberProgramTrackStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully updated the member's program track status."
+          },
+          "400": {
+            "description": "Current enrollment status input does not match member's current\nenrollment status.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Specified transition from currentEnrollmentStatus to newEnrollmentStatus\nis not allowed.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Could not find member's account or member's program track status.\nPlease check response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "coaching-classrooms API or other unexpected server-side error.\nPlease check response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/ext/rest/member/v1/u/programs/{programId}/tracks/{trackId}": {
+      "get": {
+        "tags": [
+          "External"
+        ],
+        "summary": "Get all member info for external clients.",
+        "operationId": "getAllExternalMemberInfo",
+        "parameters": [
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          },
+          {
+            "name": "trackId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TrackId"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "First specified number of records to skip. Defaults to 0 if unspecified.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of records to return. Defaults to 10 if unspecified.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "createdSince",
+            "in": "query",
+            "description": "Get only accounts that have been created since specified date\nin epoch seconds. can be combined with createdBy and modifiedSince to create\nthe requisite date ranges.",
+            "schema": {
+              "$ref": "#/components/schemas/UnixTimestamp"
+            }
+          },
+          {
+            "name": "createdBy",
+            "in": "query",
+            "description": "Get only accounts that have been created by specified date in\nepoch seconds; can be combined with createdSince and modifiedSince to create\ndate ranges.",
+            "schema": {
+              "$ref": "#/components/schemas/UnixTimestamp"
+            }
+          },
+          {
+            "name": "modifiedSince",
+            "in": "query",
+            "description": "Get only accounts that have been modified after a specified date\nin epoch seconds; can be combined with createdBy and createdSince to create\ndate ranges.",
+            "schema": {
+              "$ref": "#/components/schemas/UnixTimestamp"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched a list of all member info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExternalMemberInfo"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ext/rest/member/v1/u/{rallyId}/memberships": {
+      "delete": {
+        "tags": [
+          "External"
+        ],
+        "summary": "Terminate all classroom memberships for a user.",
+        "description": "Terminate all classroom memberships for a user.",
+        "operationId": "terminateMemberships",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "query",
+            "description": "Program ID to terminate member's memberships from.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId_2"
+            }
+          },
+          {
+            "name": "trackId",
+            "in": "query",
+            "description": "Track ID to terminate member's memberships from.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TrackId"
+            }
+          },
+          {
+            "name": "reassignTrackId",
+            "in": "query",
+            "description": "If defined, changes the user's enrolled track.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully terminated user memberships."
+          },
+          "400": {
+            "description": "Bad request. Please double-check your request body schema.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found by rally ID.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/internal/member/v1/u/{rallyId}": {
+      "get": {
+        "tags": [
+          "Internal"
+        ],
+        "summary": "Get the member account summary for a specified rally ID.",
+        "operationId": "getMemberAccountSummary-Internal",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "query",
+            "description": "If specified, then returns the user's program profile associated\nwith the specified program ID. Otherwise, omits the program profile from\nthe response schema.",
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched member account summary.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberAccountSummary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No data found for specified rally ID."
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Internal"
+        ],
+        "summary": "Create a new Coaching member account.",
+        "operationId": "createMemberAccount",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing information to create a new Coaching\nmember account",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMemberRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created new Coaching member account."
+          },
+          "401": {
+            "description": "If Real Appeal request, member is ineligible.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "If DWC request, eligible track mismatches, enrollment option\nis not supported, no eligible track found, or track partner config not\nfound. Please check response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "If DWC request, could not find member data or member account.\nPlease check response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "If DWC request, member already exists.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "If DWC request, e-mail is missing. If Real Appeal request,\nSendBird API error, coaching-trackers API error, or other unexpected server-side\nerror. Please check response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/member/v1/u/{rallyId}/programs/{programId}": {
+      "put": {
+        "tags": [
+          "Internal"
+        ],
+        "summary": "Enroll member in a new program.",
+        "operationId": "enrollInProgram",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for enrolling member in a program",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrollInProgramRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully enrolled member in a program."
+          },
+          "400": {
+            "description": "Enrollment option not supported, track partner config not found,\nor bad request body. Please check response body and/or logs to confirm\nexact error and double-check your request body schema.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Member is ineligible or program is not supported. Please check\nresponse body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or program not found. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/member/v1/u/{rallyId}/programs/{programId}/classrooms/{classroomId}/enroll": {
+      "post": {
+        "tags": [
+          "Internal"
+        ],
+        "summary": "Enroll a member in a classroom.",
+        "operationId": "enrollInClassroom",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          },
+          {
+            "name": "classroomId",
+            "in": "path",
+            "description": "Classroom ID to enroll in",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ClassroomId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing information needed to enroll in classroom",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrollClassroomRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully enrolled member in classroom."
+          },
+          "400": {
+            "description": "Classroom track ID doesn't match segmented track ID.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Could not find member account, member's program profile, or\nprogram enrollment. Please check response body and/or logs to confirm\nexact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/member/v1/u/{rallyId}/programs/{programId}/tracks/{currentTrackId}/joinNextTrack": {
+      "post": {
+        "tags": [
+          "Internal"
+        ],
+        "summary": "Complete a user's current track and join its next track.",
+        "operationId": "joinNextTrack",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          },
+          {
+            "name": "currentTrackId",
+            "in": "path",
+            "description": "Track ID that member is currently enrolled in",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TrackId"
+            }
+          },
+          {
+            "name": "nextTrackId",
+            "in": "query",
+            "description": "Track ID that member should join after completing the current\ntrack",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TrackId"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully completed user's current track and joined its\nnext track."
+          },
+          "404": {
+            "description": "Could not find program enrollment, member program profile,\nmember account, or member's program track status. Please check response\nbody and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "coaching-classrooms API error or other unexpected server-side\nerror. Please check response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/member/v1/u/{rallyId}/programs/{programId}/tracks/{trackId}/statuses": {
+      "post": {
+        "tags": [
+          "Internal"
+        ],
+        "summary": "Create MemberProgramTrackStatus record with NeedsClassroom Status for\na Member",
+        "operationId": "createMemberProgramTrackStatus",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          },
+          {
+            "name": "trackId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TrackId"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully creates Member Program Track Status"
+          },
+          "404": {
+            "description": "Could not find member account. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Member Program Track Status record already exist.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/member/v1/u/{rallyId}/programs/{programId}/tracks/{trackId}/statuses/{status}": {
+      "put": {
+        "tags": [
+          "Internal"
+        ],
+        "summary": "Update a member's program track status.",
+        "operationId": "updateMemberProgramTrackStatus-Internal",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          },
+          {
+            "name": "trackId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TrackId"
+            }
+          },
+          {
+            "name": "status",
+            "in": "path",
+            "description": "Status to update the program track status to",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/EnrollmentStatus"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully updated member's program track status."
+          },
+          "400": {
+            "description": "Members program track status was not found.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/member/v1/u/{rallyId}/personalData": {
+      "delete": {
+        "tags": [
+          "Internal"
+        ],
+        "summary": "Delete the user personal data for a rallyId.",
+        "operationId": "deleteMemberPersonalData",
+        "parameters": [
+          {
+            "name": "rallyId",
+            "in": "path",
+            "description": "Rally ID of member",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted the member's personal data"
+          },
+          "404": {
+            "description": "Could not find member data or member account. Please check\nresponse body and/or logs to confirm exact error."
+          }
+        }
+      }
+    },
+    "/rest/member/v1/chatAppInfo": {
+      "get": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Get relevant chat application information for SendBird.",
+        "operationId": "getChatInfo",
+        "parameters": [
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched requested chat information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatInfoResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v1/u/current": {
+      "put": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Update a member's profile.",
+        "operationId": "updateMemberProfile",
+        "parameters": [
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing member profile information to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberProfile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully updated a member's profile."
+          },
+          "400": {
+            "description": "Updating non-editable fields prevented, e-mail address is invalid,\nprogram ID mismatches, or bad request body. Please check response body\nand/or logs to confirm exact error and double-check your request body\nschema.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or member's program track status not found. Please check\nresponse body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Create a Real Appeal member account.",
+        "operationId": "createMemberAccount",
+        "parameters": [
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing the registration information to create\na new Real Appeal member",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRealAppealMemberRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created new Real Appeal member account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "uniqueItems": true,
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProgramId_2"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Please double-check your request body schema.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Member is ineligible.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "SendBird API error, coaching-trackers API error, or other unexpected\nserver-side error. Please check response body and/or logs to confirm exact\nerror.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v2/u/current": {
+      "post": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Create a new Coaching member account.",
+        "operationId": "createMemberAccountV2",
+        "parameters": [
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing information to create a new Coaching\nmember account",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMemberRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created new Coaching member account."
+          },
+          "401": {
+            "description": "If Real Appeal request, member is ineligible.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "If DWC request, eligible track mismatches, enrollment option\nis not supported, no eligible track found, or track partner config not\nfound. Please check response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "If DWC request, could not find member data or member account.\nPlease check response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "If DWC request, member already exists.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "If DWC request, e-mail is missing. If Real Appeal request,\nSendBird API error, coaching-trackers API error, or other unexpected server-side\nerror. Please check response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v1/u/current/postLogin": {
+      "post": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Submit a user's login.",
+        "description": "Submitting a user's login includes updating the last login timestamp\nand if the MEMBER_LOGIN_TIMEZONE_ENABLED configuration is enabled, then also\nsetting the user's timezone if empty.",
+        "operationId": "postLogin",
+        "parameters": [
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          },
+          {
+            "name": "X-Rally-User-Time-Zone",
+            "in": "header",
+            "description": "Timezone provided via request header. If not specified, then\ndefaults to server time.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully submitted the user's login."
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v1/u/current/programs/{programId}": {
+      "put": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Enroll member in a new program.",
+        "operationId": "enrollInProgram",
+        "parameters": [
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          },
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for enrolling member in a program",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrollInProgramRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully enrolled member in a program."
+          },
+          "400": {
+            "description": "Enrollment option not supported, track partner config not found,\nor bad request body. Please check response body and/or logs to confirm\nexact error and double-check your request body schema.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Member is ineligible or program is not supported. Please check\nresponse body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or program not found. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v1/u/current/programs/{programId}/profile": {
+      "put": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Update a member's program profile.",
+        "operationId": "updateProgramProfile",
+        "parameters": [
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          },
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing updated program profile",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberProgramProfile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully updated member program profile."
+          },
+          "400": {
+            "description": "Updating non-editable fields prevented, e-mail address is invalid,\nprogram ID mismatches, or bad request body. Please check response body\nand/or logs to confirm exact error and double-check your request body\nschema.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or member's program track status not found. Please check\nresponse body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v1/u/current/programs/{programId}/stratification": {
+      "post": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Start survey for the selected program.",
+        "operationId": "startProgramStratificationSurvey",
+        "parameters": [
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          },
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully started/resumed a survey for the selected program.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SurveyMetadata"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Requested resource not found."
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v1/u/current/programs/{programId}/tracks/{trackId}": {
+      "delete": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Cancel a member's program enrollment.",
+        "operationId": "cancelProgramEnrollment",
+        "parameters": [
+          {
+            "name": "programId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          },
+          {
+            "name": "trackId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TrackId"
+            }
+          },
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully cancelled program enrollment."
+          },
+          "403": {
+            "description": "Specified program is not supported.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member's program track status not found for specified program\nID and track ID.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v1/u/current/programTrackStatuses": {
+      "get": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Get a list of the member's program track statuses.",
+        "operationId": "getMemberProgramTrackStatuses",
+        "parameters": [
+          {
+            "name": "programId",
+            "in": "query",
+            "description": "If specified, then filters the program track statuses result\nto the specified program ID.",
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId_2"
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "description": "Optional list of program enrollment status to filter track statuses\nby",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/EnrollmentStatus"
+              }
+            }
+          },
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched member's program track statuses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MemberProgramTrackStatus"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v1/u/current/qualification/profile": {
+      "get": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Get a member's qualification profile.",
+        "operationId": "getQualificationProfile",
+        "parameters": [
+          {
+            "name": "programId",
+            "in": "query",
+            "description": "Program ID to fetch qualification profile for",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId_2"
+            }
+          },
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched member's qualification profile.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartialQualification"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No qualification profile for specified rally ID and program\nID."
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Save partial qualification information.",
+        "operationId": "saveQualificationProfile",
+        "parameters": [
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing partial qualification information",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialQualification"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully saved partial qualification."
+          },
+          "400": {
+            "description": "Bad request. Please double-check your request body schema.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v2/u/current/qualification/profile": {
+      "post": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Save partial qualification information.",
+        "description": "This V2 endpoint serves as an alternative to the V1 endpoint for\nthe UI clients to interact with the qualification profile without needing\nto directly query and request the qualification profile separately.",
+        "operationId": "saveQualificationProfileV2",
+        "parameters": [
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing partial qualification information",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialQualification"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/rest/member/v1/u/current/qualification/segment": {
+      "post": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Segment a user based on their qualification information.",
+        "operationId": "qualifyAndSegment",
+        "parameters": [
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing qualification information",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialQualification"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully qualified and segmented a user into a track."
+          },
+          "400": {
+            "description": "Client ID not found for program, member profile had no assigned\ntrack ID, member had no enrollment status, or bad request body. Please\ncheck response body and/or logs to confirm exact error and double-check\nyour request body schema.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Member is already disqualified or has been disqualified. Please\ncheck response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member account not found.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v2/u/current/qualification/segment": {
+      "post": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Segment a user based on their qualification information and track ID.",
+        "operationId": "qualifyAndSegmentV2",
+        "parameters": [
+          {
+            "name": "trackId",
+            "in": "query",
+            "description": "Track ID that member is enrolling in",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TrackId"
+            }
+          },
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing qualification information",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialQualification"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully qualified and segmented a user into a track."
+          },
+          "400": {
+            "description": "Client ID not found for program, member profile had no assigned\ntrack ID, member had no enrollment status, or bad request body. Please\ncheck response body and/or logs to confirm exact error and double-check\nyour request body schema.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Member is already disqualified or has been disqualified. Please\ncheck response body and/or logs to confirm exact error.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member account not found.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v1/u/current/rallyId": {
+      "get": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Get the rally ID for the current user.",
+        "operationId": "getRallyId",
+        "parameters": [
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched the user's rally ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RallyIdResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rest/member/v1/u/current/summary": {
+      "get": {
+        "tags": [
+          "Member"
+        ],
+        "summary": "Get the member account summary for a specified rally ID.",
+        "operationId": "getMemberAccountSummary",
+        "parameters": [
+          {
+            "name": "programId",
+            "in": "query",
+            "description": "If specified, then returns the user's program profile associated\nwith the specified program ID. Otherwise, omits the program profile from\nthe response schema.",
+            "schema": {
+              "$ref": "#/components/schemas/ProgramId"
+            }
+          },
+          {
+            "name": "includeInActiveTracks",
+            "in": "query",
+            "description": "If true, then returns all tracks. Otherwise, returns only active\ntracks.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "COACHING-EDGE-SWAGGER-NONPROD-RALLYID",
+            "in": "header",
+            "description": "This header is used to inject a Rally ID into an API call on\nsupported test environments, such as dev, integration, and load-test. In\nprod or other disabled environments, the Rally ID is provided by an authenticated\nArachne session and is injected into API requests when being proxied by\nthe coaching-edge service, therefore being a fixed ID of the authenticated\nRally account. However, on supported test environments, any string can be\nspecified to be injected as a Rally ID into the request.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RallyId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched member account summary.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberAccountSummary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No data found for specified rally ID."
+          },
+          "500": {
+            "description": "Unexpected server-side error. Please check response body and/or\nlogs to confirm exact error.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RallyId": {
+        "type": "string"
+      },
+      "ProgramId": {
+        "type": "string",
+        "enum": [
+          "real_appeal",
+          "eat_smart",
+          "fit_for_life",
+          "quit_tobacco",
+          "diabetes_lifestyle",
+          "meditation",
+          "happiness",
+          "general_wellness",
+          "family_wellness",
+          "healthy_heart",
+          "sleep_well",
+          "stress_less",
+          "financial_wellbeing",
+          "weight_and_wellness",
+          "living_with_diabetes"
+        ]
+      },
+      "PartialQualification": {
+        "discriminator": {
+          "propertyName": "programId",
+          "mapping": {
+            "real_appeal": "#/RealAppealPartialQualification"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/RealAppealPartialQualification"
+          }
+        ]
+      },
+      "RealAppealPartialQualification": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PartialQualificationBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "heightInches": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "weight": {
+                "type": "number",
+                "format": "double"
+              },
+              "getsModerateExercise": {
+                "type": "boolean"
+              },
+              "hasDiabetes": {
+                "type": "boolean"
+              },
+              "hasPrediabetes": {
+                "type": "boolean"
+              },
+              "hasHighCholesterol": {
+                "type": "boolean"
+              },
+              "hasHighBloodPressure": {
+                "type": "boolean"
+              },
+              "isSmoker": {
+                "type": "boolean"
+              },
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date"
+              },
+              "gender": {
+                "$ref": "#/components/schemas/Gender"
+              },
+              "bloodTestResults": {
+                "$ref": "#/components/schemas/BloodTestResults"
+              },
+              "diabetesInfo": {
+                "$ref": "#/components/schemas/DiabetesInfo"
+              },
+              "ethnicityAndRace": {
+                "$ref": "#/components/schemas/EthnicityAndRace"
+              },
+              "isPregnant": {
+                "type": "boolean"
+              },
+              "qualificationSource": {
+                "$ref": "#/components/schemas/QualificationSource"
+              }
+            }
+          }
+        ]
+      },
+      "PartialQualificationBase": {
+        "required": [
+          "programId"
+        ],
+        "type": "object",
+        "properties": {
+          "programId": {
+            "$ref": "#/components/schemas/ProgramId_2"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          }
+        }
+      },
+      "MemberAccountSummary": {
+        "required": [
+          "chatAppId",
+          "createdAt",
+          "lastLoginAt",
+          "lastModifiedAt",
+          "profile",
+          "programTrackStatuses",
+          "rallyId"
+        ],
+        "type": "object",
+        "properties": {
+          "rallyId": {
+            "$ref": "#/components/schemas/RallyId_2"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/MemberProfile"
+          },
+          "chatAccessToken": {
+            "type": "string"
+          },
+          "chatAppId": {
+            "type": "string"
+          },
+          "programProfile": {
+            "$ref": "#/components/schemas/MemberProgramProfile"
+          },
+          "programTrackStatuses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberProgramTrackStatus"
+            }
+          },
+          "lastModifiedAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lastLoginAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "UpdateMemberEmailRequest": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "UnixTimestamp": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "MemberProfile": {
+        "required": [
+          "clientInfoSet",
+          "contactInfo",
+          "dateOfBirth",
+          "firstName",
+          "lastName"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date"
+          },
+          "contactInfo": {
+            "$ref": "#/components/schemas/MemberContactInfo"
+          },
+          "memberId": {
+            "type": "string"
+          },
+          "clientInfoSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClientInfo"
+            }
+          },
+          "insurerInfo": {
+            "$ref": "#/components/schemas/InsurerInfo"
+          },
+          "acceptedHipaaTerms": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ExternalMemberInfo": {
+        "required": [
+          "createdAt",
+          "lastLoginAt",
+          "lastModifiedAt",
+          "profile",
+          "programTrackStatuses",
+          "rallyId"
+        ],
+        "type": "object",
+        "properties": {
+          "rallyId": {
+            "$ref": "#/components/schemas/RallyId_2"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/MemberProfile"
+          },
+          "programTrackStatus": {
+            "$ref": "#/components/schemas/MemberProgramTrackStatus"
+          },
+          "programProfile": {
+            "$ref": "#/components/schemas/MemberProgramProfile"
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/UnixTimestamp"
+          },
+          "lastModifiedAt": {
+            "$ref": "#/components/schemas/UnixTimestamp"
+          },
+          "lastLoginAt": {
+            "$ref": "#/components/schemas/UnixTimestamp"
+          },
+          "programTrackStatuses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberProgramTrackStatus"
+            }
+          }
+        }
+      },
+      "MemberProgramProfile": {
+        "discriminator": {
+          "propertyName": "programId",
+          "mapping": {
+            "real_appeal": "#/RealAppealProgramProfile"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/RealAppealProgramProfile"
+          }
+        ]
+      },
+      "RealAppealProgramProfile": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MemberProgramProfileBase"
+          },
+          {
+            "required": [
+              "bmi",
+              "getsModerateExercise",
+              "hasDiabetes",
+              "hasHighBloodPressure",
+              "hasHighCholesterol",
+              "hasPrediabetes",
+              "height",
+              "isSmoker",
+              "weight"
+            ],
+            "type": "object",
+            "properties": {
+              "weightGoal": {
+                "type": "number",
+                "format": "double"
+              },
+              "stepGoal": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "calorieGoal": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "weight": {
+                "$ref": "#/components/schemas/BodyMeasurement"
+              },
+              "height": {
+                "$ref": "#/components/schemas/BodyMeasurement"
+              },
+              "bmi": {
+                "type": "number",
+                "format": "double"
+              },
+              "getsModerateExercise": {
+                "type": "boolean"
+              },
+              "hasDiabetes": {
+                "type": "boolean"
+              },
+              "hasPrediabetes": {
+                "type": "boolean"
+              },
+              "hasHighCholesterol": {
+                "type": "boolean"
+              },
+              "hasHighBloodPressure": {
+                "type": "boolean"
+              },
+              "isSmoker": {
+                "type": "boolean"
+              },
+              "createdAt": {
+                "$ref": "#/components/schemas/UnixTimestamp"
+              },
+              "bloodTestResults": {
+                "$ref": "#/components/schemas/BloodTestResults"
+              },
+              "diabetesInfo": {
+                "$ref": "#/components/schemas/DiabetesInfo"
+              },
+              "ethnicityAndRace": {
+                "$ref": "#/components/schemas/EthnicityAndRace"
+              },
+              "isPregnant": {
+                "type": "boolean"
+              },
+              "qualificationSource": {
+                "$ref": "#/components/schemas/QualificationSource"
+              }
+            }
+          }
+        ]
+      },
+      "MemberProgramProfileBase": {
+        "required": [
+          "gender",
+          "programId"
+        ],
+        "type": "object",
+        "properties": {
+          "programId": {
+            "$ref": "#/components/schemas/ProgramId_2"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/UnixTimestamp"
+          }
+        }
+      },
+      "TrackStatusUpdateRequest": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/EnrollmentStatus"
+          },
+          "trackId": {
+            "$ref": "#/components/schemas/TrackId"
+          }
+        }
+      },
+      "UpdateMemberProgramTrackStatusRequest": {
+        "required": [
+          "currentEnrollmentStatus",
+          "newEnrollmentStatus",
+          "supportUserEmail"
+        ],
+        "type": "object",
+        "properties": {
+          "jiraTicket": {
+            "type": "string"
+          },
+          "currentEnrollmentStatus": {
+            "$ref": "#/components/schemas/EnrollmentStatus"
+          },
+          "newEnrollmentStatus": {
+            "$ref": "#/components/schemas/EnrollmentStatus"
+          },
+          "supportUserEmail": {
+            "type": "string"
+          },
+          "trackId": {
+            "$ref": "#/components/schemas/TrackId"
+          }
+        }
+      },
+      "TrackId": {
+        "type": "string"
+      },
+      "ProgramId_2": {
+        "type": "string",
+        "enum": [
+          "real_appeal",
+          "eat_smart",
+          "fit_for_life",
+          "quit_tobacco",
+          "diabetes_lifestyle",
+          "meditation",
+          "happiness",
+          "general_wellness",
+          "family_wellness",
+          "healthy_heart",
+          "sleep_well",
+          "stress_less",
+          "financial_wellbeing",
+          "weight_and_wellness",
+          "living_with_diabetes"
+        ]
+      },
+      "CreateMemberRequest": {
+        "discriminator": {
+          "propertyName": "programId"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateDwcMemberRequest"
+          },
+          {
+            "$ref": "#/components/schemas/CreateRealAppealMemberRequest"
+          }
+        ]
+      },
+      "CreateDwcMemberRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreateMemberRequestBase"
+          },
+          {
+            "required": [
+              "enrollmentOption",
+              "trackId"
+            ],
+            "type": "object",
+            "properties": {
+              "trackId": {
+                "$ref": "#/components/schemas/TrackId"
+              },
+              "enrollmentOption": {
+                "$ref": "#/components/schemas/DwcTrackEnrollmentOption"
+              },
+              "fromIdt": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "CreateMemberRequestBase": {
+        "required": [
+          "programId"
+        ],
+        "type": "object",
+        "properties": {
+          "programId": {
+            "$ref": "#/components/schemas/ProgramId_2"
+          }
+        }
+      },
+      "CreateRealAppealMemberRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreateMemberRequestBase"
+          },
+          {
+            "required": [
+              "acceptedPrivacyPractices",
+              "contactInfo",
+              "eligibilityRequest"
+            ],
+            "type": "object",
+            "properties": {
+              "eligibilityRequest": {
+                "$ref": "#/components/schemas/EligibilityRequest"
+              },
+              "contactInfo": {
+                "$ref": "#/components/schemas/MemberContactInfo"
+              },
+              "acceptedPrivacyPractices": {
+                "type": "boolean"
+              },
+              "acceptedHipaaTerms": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "EnrollInProgramRequest": {
+        "required": [
+          "enrollmentOption",
+          "trackId"
+        ],
+        "type": "object",
+        "properties": {
+          "trackId": {
+            "$ref": "#/components/schemas/TrackId"
+          },
+          "enrollmentOption": {
+            "$ref": "#/components/schemas/DwcTrackEnrollmentOption"
+          },
+          "fromIdt": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ClassroomId": {
+        "type": "string"
+      },
+      "EnrollClassroomRequest": {
+        "required": [
+          "trackId"
+        ],
+        "type": "object",
+        "properties": {
+          "trackId": {
+            "$ref": "#/components/schemas/TrackId"
+          }
+        }
+      },
+      "EnrollmentStatus": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "disenrolled",
+          "disqualified",
+          "enrolled",
+          "idle",
+          "ineligible",
+          "needsClassroom",
+          "needsQualification"
+        ]
+      },
+      "ChatInfoResponse": {
+        "required": [
+          "appId"
+        ],
+        "type": "object",
+        "properties": {
+          "appId": {
+            "type": "string"
+          }
+        }
+      },
+      "SurveyMetadata": {
+        "required": [
+          "chapters",
+          "instanceId",
+          "surveyId",
+          "surveyVersion"
+        ],
+        "type": "object",
+        "properties": {
+          "instanceId": {
+            "$ref": "#/components/schemas/InstanceId"
+          },
+          "surveyId": {
+            "$ref": "#/components/schemas/SurveyId"
+          },
+          "surveyVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "chapters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChapterMetadata"
+            }
+          },
+          "currentQuestion": {
+            "$ref": "#/components/schemas/CurrentSurveyQuestion"
+          }
+        }
+      },
+      "MemberProgramTrackStatus": {
+        "required": [
+          "createdAt",
+          "id",
+          "lastModifiedAt",
+          "programId",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "programId": {
+            "$ref": "#/components/schemas/ProgramId_2"
+          },
+          "trackId": {
+            "$ref": "#/components/schemas/TrackId"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EnrollmentStatus"
+          },
+          "lastModifiedAt": {
+            "$ref": "#/components/schemas/UnixTimestamp"
+          },
+          "dwcTrackEnrollmentOption": {
+            "$ref": "#/components/schemas/DwcTrackEnrollmentOption"
+          },
+          "hasDiscussions": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/UnixTimestamp"
+          }
+        }
+      },
+      "RallyIdResponse": {
+        "required": [
+          "rallyId"
+        ],
+        "type": "object",
+        "properties": {
+          "rallyId": {
+            "$ref": "#/components/schemas/RallyId_2"
+          }
+        }
+      },
+      "Gender": {
+        "type": "string",
+        "enum": [
+          "male",
+          "female",
+          "na"
+        ]
+      },
+      "BloodTestResults": {
+        "required": [
+          "lastModifiedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "a1c": {
+            "$ref": "#/components/schemas/BloodTestMeasurements"
+          },
+          "fastingGlucose": {
+            "$ref": "#/components/schemas/BloodTestMeasurements"
+          },
+          "nonFastingGlucose": {
+            "$ref": "#/components/schemas/BloodTestMeasurements"
+          },
+          "lastModifiedAt": {
+            "$ref": "#/components/schemas/UnixTimestamp"
+          }
+        }
+      },
+      "BloodTestMeasurements": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "format": "double"
+          },
+          "date": {
+            "$ref": "#/components/schemas/UnixTimestamp"
+          }
+        }
+      },
+      "DiabetesInfo": {
+        "type": "object",
+        "properties": {
+          "hasGestationalDiabetes": {
+            "type": "number",
+            "format": "boolean"
+          },
+          "familyMembersHaveDiabetes": {
+            "type": "number",
+            "format": "boolean"
+          }
+        }
+      },
+      "EthnicityAndRace": {
+        "required": [
+          "race"
+        ],
+        "type": "object",
+        "properties": {
+          "ethnicity": {
+            "$ref": "#/components/schemas/Ethnicity"
+          },
+          "race": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Race"
+            }
+          }
+        }
+      },
+      "QualificationSource": {
+        "type": "string",
+        "enum": [
+          "disqualified",
+          "gluctest",
+          "gdm",
+          "risktest"
+        ]
+      },
+      "RallyId_2": {
+        "type": "string"
+      },
+      "MemberContactInfo": {
+        "required": [
+          "canEmail",
+          "canSms",
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "homePhone": {
+            "type": "string"
+          },
+          "mobilePhone": {
+            "type": "string"
+          },
+          "streetAddress": {
+            "$ref": "#/components/schemas/PostalAddress"
+          },
+          "canEmail": {
+            "type": "boolean"
+          },
+          "canSms": {
+            "type": "boolean"
+          },
+          "timezone": {
+            "type": "string"
+          }
+        }
+      },
+      "ClientInfo": {
+        "required": [
+          "id",
+          "name",
+          "programId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "rallyClientId": {
+            "type": "string"
+          },
+          "policyNumber": {
+            "type": "string"
+          },
+          "programId": {
+            "$ref": "#/components/schemas/ProgramId_2"
+          },
+          "effectiveStartDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "effectiveEndDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "InsurerInfo": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "BodyMeasurement": {
+        "required": [
+          "unit",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "format": "double"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/UnitOfMeasure"
+          }
+        }
+      },
+      "DwcTrackEnrollmentOption": {
+        "type": "string",
+        "enum": [
+          "Online Coaching",
+          "Personal Coaching"
+        ]
+      },
+      "EligibilityRequest": {
+        "required": [
+          "dateOfBirth",
+          "firstName",
+          "lastName",
+          "memberId"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date"
+          },
+          "memberId": {
+            "type": "string"
+          },
+          "groupNumber": {
+            "type": "string"
+          },
+          "insuranceCarrierId": {
+            "type": "string"
+          }
+        }
+      },
+      "InstanceId": {
+        "type": "string"
+      },
+      "SurveyId": {
+        "type": "string"
+      },
+      "ChapterMetadata": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "CurrentSurveyQuestion": {
+        "required": [
+          "chapterName",
+          "chapterNumber",
+          "definition",
+          "hasPreviousQuestion",
+          "pctComplete",
+          "questionNumber",
+          "surveyClassification"
+        ],
+        "type": "object",
+        "properties": {
+          "definition": {
+            "$ref": "#/components/schemas/QuestionDefinition"
+          },
+          "chapterName": {
+            "type": "string"
+          },
+          "chapterNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pctComplete": {
+            "type": "number",
+            "format": "double"
+          },
+          "questionNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousQuestion": {
+            "type": "boolean"
+          },
+          "surveyClassification": {
+            "$ref": "#/components/schemas/SurveyClassification"
+          }
+        }
+      },
+      "Ethnicity": {
+        "type": "string",
+        "enum": [
+          "hispanicLatino",
+          "notHispanicLatino",
+          "na"
+        ]
+      },
+      "Race": {
+        "type": "string",
+        "enum": [
+          "alaskaNative",
+          "asianOrAsianAmerican",
+          "blackOrAfricanAmerican",
+          "nativeAmerican",
+          "nativeHawaiian",
+          "white"
+        ]
+      },
+      "PostalAddress": {
+        "required": [
+          "address",
+          "country",
+          "postalCode"
+        ],
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "city": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
+        }
+      },
+      "UnitOfMeasure": {
+        "type": "string",
+        "enum": [
+          "Unknown",
+          "pound",
+          "stone",
+          "inch",
+          "foot",
+          "mmHg",
+          "percent",
+          "meter",
+          "centimeter",
+          "gram",
+          "Kelvin",
+          "liter",
+          "milliliter",
+          "bpm",
+          "Joule",
+          "Pascale",
+          "calorie",
+          "second",
+          "minute",
+          "hour",
+          "day",
+          "month",
+          "year",
+          "L/min",
+          "mg/L",
+          "mg/dL",
+          "kg/m2",
+          "kg/m3",
+          "mmol/L",
+          "mmol/mol",
+          "IU/L",
+          "fL",
+          "g/dL",
+          "ng/mL",
+          "pg",
+          "pg/mL",
+          "ratio",
+          "stick",
+          "drink",
+          "alcohol-unit",
+          "uIU/mL",
+          "ug/dL",
+          "umol/L",
+          "10*3/uL",
+          "10*9/uL",
+          "10*6/uL",
+          "10*12/L",
+          "mEq/L"
+        ]
+      },
+      "QuestionDefinition": {
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "interstitial": "#/InterstitialQuestionDefinition",
+            "select": "#/SelectQuestionDefinition",
+            "input": "#/InputQuestionDefinition",
+            "quiz": "#/QuizQuestionDefinition",
+            "quizSummaryInterstitial": "#/QuizSummaryInterstitialDefinition",
+            "quizIntroInterstitial": "#/QuizIntroInterstitialDefinition"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/InterstitialQuestionDefinition"
+          },
+          {
+            "$ref": "#/components/schemas/SelectQuestionDefinition"
+          },
+          {
+            "$ref": "#/components/schemas/InputQuestionDefinition"
+          },
+          {
+            "$ref": "#/components/schemas/QuizQuestionDefinition"
+          },
+          {
+            "$ref": "#/components/schemas/QuizSummaryInterstitialDefinition"
+          },
+          {
+            "$ref": "#/components/schemas/QuizIntroInterstitialDefinition"
+          }
+        ]
+      },
+      "InterstitialQuestionDefinition": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/QuestionDefinitionBase"
+          }
+        ]
+      },
+      "QuestionDefinitionBase": {
+        "required": [
+          "choices",
+          "questionId",
+          "tags",
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/QuestionMetadata"
+          },
+          "textSecondary": {
+            "type": "string"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Choice"
+            }
+          },
+          "image": {
+            "type": "string"
+          },
+          "ctaText": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tooltipTitle": {
+            "type": "string"
+          },
+          "tooltip": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "interstitial",
+              "select",
+              "input",
+              "quiz",
+              "quizSummaryInterstitial",
+              "quizIntroInterstitial"
+            ]
+          }
+        }
+      },
+      "SelectQuestionDefinition": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/QuestionDefinitionBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "multiSelect": {
+                "type": "boolean"
+              },
+              "viewType": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "InputQuestionDefinition": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/QuestionDefinitionBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "viewType": {
+                "type": "string"
+              },
+              "minInputsRequired": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "QuizQuestionDefinition": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/QuestionDefinitionBase"
+          },
+          {
+            "required": [
+              "correctAnswerExplanation",
+              "correctAnswerId"
+            ],
+            "type": "object",
+            "properties": {
+              "correctAnswerId": {
+                "type": "string"
+              },
+              "correctAnswerExplanation": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "QuizSummaryInterstitialDefinition": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/QuestionDefinitionBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "summaryText": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/QuizQuestionSummaryContext"
+                }
+              },
+              "numQuizQuestions": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "numCorrect": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "QuizIntroInterstitialDefinition": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/QuestionDefinitionBase"
+          }
+        ]
+      },
+      "SurveyClassification": {
+        "required": [
+          "surveyCategory",
+          "surveyType"
+        ],
+        "type": "object",
+        "properties": {
+          "surveyCategory": {
+            "type": "string"
+          },
+          "surveyType": {
+            "type": "string"
+          }
+        }
+      },
+      "QuestionMetadata": {
+        "required": [
+          "creatorUserId",
+          "locale",
+          "published"
+        ],
+        "type": "object",
+        "properties": {
+          "creatorUserId": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "published": {
+            "type": "boolean"
+          },
+          "dateCreated": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dateUpdated": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "certification": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          }
+        }
+      },
+      "Choice": {
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "selectChoice": "#/SelectChoice",
+            "inputChoice": "#/InputChoice"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SelectChoice"
+          },
+          {
+            "$ref": "#/components/schemas/InputChoice"
+          }
+        ]
+      },
+      "SelectChoice": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ChoiceBase"
+          }
+        ]
+      },
+      "ChoiceBase": {
+        "required": [
+          "answerId",
+          "answerText",
+          "exclusiveWidth"
+        ],
+        "type": "object",
+        "properties": {
+          "answerId": {
+            "type": "string"
+          },
+          "answerText": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "string"
+          },
+          "tagIds": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "answerTextSecondary": {
+            "type": "string"
+          },
+          "exclusiveWidth": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tooltip": {
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "inputChoice",
+              "selectChoice"
+            ]
+          }
+        }
+      },
+      "InputChoice": {
+        "required": [
+          "optional",
+          "restrictions"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ChoiceBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "restrictions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Restriction"
+                }
+              },
+              "optional": {
+                "type": "boolean"
+              },
+              "unit": {
+                "type": "string"
+              },
+              "measurementUnit": {
+                "type": "string"
+              },
+              "lookupListName": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "QuizQuestionSummaryContext": {
+        "required": [
+          "answerText",
+          "attempts",
+          "correctAnswerExplanation",
+          "questionText"
+        ],
+        "type": "object",
+        "properties": {
+          "questionText": {
+            "type": "string"
+          },
+          "answerText": {
+            "type": "string"
+          },
+          "correctAnswerExplanation": {
+            "type": "string"
+          },
+          "attempts": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Restriction": {
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "mininclusive": "#/MinInclusiveRestriction",
+            "maxinclusive": "#/MaxInclusiveRestriction",
+            "regex": "#/RegexRestriction",
+            "wholenumber": "#/WholeNumberRestriction"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/MinInclusiveRestriction"
+          },
+          {
+            "$ref": "#/components/schemas/MaxInclusiveRestriction"
+          },
+          {
+            "$ref": "#/components/schemas/RegexRestriction"
+          },
+          {
+            "$ref": "#/components/schemas/WholeNumberRestriction"
+          }
+        ]
+      },
+      "MinInclusiveRestriction": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RestrictionBase"
+          },
+          {
+            "required": [
+              "min"
+            ],
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "number",
+                "format": "double"
+              }
+            }
+          }
+        ]
+      },
+      "RestrictionBase": {
+        "required": [
+          "kind"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "mininclusive",
+              "maxinclusive",
+              "regex",
+              "wholenumber"
+            ]
+          }
+        }
+      },
+      "MaxInclusiveRestriction": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RestrictionBase"
+          },
+          {
+            "required": [
+              "max"
+            ],
+            "type": "object",
+            "properties": {
+              "max": {
+                "type": "number",
+                "format": "double"
+              }
+            }
+          }
+        ]
+      },
+      "RegexRestriction": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RestrictionBase"
+          },
+          {
+            "required": [
+              "regex"
+            ],
+            "type": "object",
+            "properties": {
+              "regex": {
+                "type": "string"
+              },
+              "uiMask": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "WholeNumberRestriction": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RestrictionBase"
+          },
+          {
+            "required": [
+              "wholeNumber"
+            ],
+            "type": "object",
+            "properties": {
+              "wholeNumber": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
