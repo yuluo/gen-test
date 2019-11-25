@@ -9,7 +9,7 @@ module.exports.parseSpec = async event => {
   const apiObject = await sp.dereference(event);
   const paths = apiObject.paths;
 
-  shell.rm("-rf", "generated/*");
+  shell.rm("-rf", "generated/");
   shell.mkdir("-p", "generated/node_modules");
   shell.cp("-R", "src/test-libs/", "generated/node_modules");
   shell.cp("-R", "config", "generated/node_modules");
