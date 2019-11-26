@@ -18,9 +18,12 @@
   },
   "homepage": "https://github.com/yuluo/gen-test#readme",
   "devDependencies": {
+    "@types/node": "^12.12.14",
     "jest": "^24.9.0",
     "prettier": "^1.19.1",
-    "serverless-offline": "^5.12.0"
+    "serverless-offline": "^5.12.0",
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.2"
   },
   "dependencies": {
     "hygen": "^5.0.3",
