@@ -1,12 +1,12 @@
-"use strict";
-const jp = require("jsonpath");
-const sp = require("swagger-parser");
-const shell = require("shelljs");
-const rtg = require("./libs/require-test-generator");
-const utils = require("./libs/utils");
+import { jsonpath } from "jsonpath";
+import SwaggerParser from "swagger-parser";
+import * as shell from "shelljs";
+import { generateTest } from "./libs/require-test-generator";
+import { writeFileUtil } from "./libs/utils";
+import { APIGatewayEvent, Handler } from "aws-lambda";
 
-module.exports.parseSpec = async event => {
-  const apiObject = await sp.dereference(event);
+export const parseSpec: Handler = async (event: APIGatewayEvent) => {
+  const apiObject = await SwaggerParser.dereference(event);
   const paths = apiObject.paths;
 
   _setupWorkspace();
@@ -16,7 +16,7 @@ module.exports.parseSpec = async event => {
     const path = paths[pathKey];
     Object.keys(path).forEach(key => {
       if (key === "post") {
-        const jsonSchema = jp.query(
+        const jsonSchema = jsonpath.query(
           path[key],
           "$['requestBody']['content']['application/json']['schema']"
         )[0];
@@ -24,13 +24,12 @@ module.exports.parseSpec = async event => {
         if (jsonSchema) {
           //console.log(JSON.stringify(jsonSchema, null, 2));
           //let template = _generatePayloadTemplate(jsonSchema.properties);
-          rtg.generateTest(pathKey, key, jsonSchema);
+          generateTest(pathKey, key, jsonSchema);
         }
       }
     });
   });
 };
-
 
 function _setupWorkspace() {
   shell.rm("-rf", "generated/");
@@ -40,22 +39,22 @@ function _setupWorkspace() {
 }
 
 function _createTestConfig(url, apiObject) {
-  const urlArray = url.split('/');
-  const rootUrl = urlArray.slice(0, urlArray.length - 1).join('/');
-  const baseUrls = apiObject.servers.map( server => {
+  const urlArray = url.split("/");
+  const rootUrl = urlArray.slice(0, urlArray.length - 1).join("/");
+  const baseUrls = apiObject.servers.map(server => {
     var absolutePattern = /^https?:\/\//i;
-    if(absolutePattern.test(server.url)) {
+    if (absolutePattern.test(server.url)) {
       return server.url;
     } else {
       return rootUrl + server.url;
     }
-  })
+  });
 
   const testConfig = {
     baseUrl: baseUrls[0]
   };
 
-  utils.writeFile(
+  writeFileUtil(
     `./generated/node_modules/config/test-config.json`,
     JSON.stringify(testConfig, null, 2)
   );

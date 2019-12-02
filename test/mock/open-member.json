@@ -41,9 +41,7 @@
   "paths": {
     "/admin/member/v1/u/{rallyId}/qualification/profile": {
       "get": {
-        "tags": [
-          "Admin"
-        ],
+        "tags": ["Admin"],
         "summary": "Get a member's qualification profile.",
         "operationId": "getQualificationProfile-Admin",
         "parameters": [
@@ -100,9 +98,7 @@
     },
     "/admin/member/v1/u/{rallyId}": {
       "get": {
-        "tags": [
-          "Admin"
-        ],
+        "tags": ["Admin"],
         "summary": "Get the member account summary for a specified rally ID.",
         "operationId": "getMemberAccountSummary-Admin",
         "parameters": [
@@ -156,9 +152,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Admin"
-        ],
+        "tags": ["Admin"],
         "summary": "Update a member's email.",
         "operationId": "updateMemberEmail",
         "parameters": [
@@ -225,9 +219,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Admin"
-        ],
+        "tags": ["Admin"],
         "summary": "Deletes a Coaching Member who has not qualified yet for any program\ntrack.",
         "operationId": "deleteMember",
         "parameters": [
@@ -268,9 +260,7 @@
     },
     "/admin/member/v1/u/{rallyId}/achievementEvent": {
       "post": {
-        "tags": [
-          "Admin"
-        ],
+        "tags": ["Admin"],
         "summary": "Send member program data to the ESRA Achievement API.",
         "operationId": "sendMemberDataToAchievement",
         "parameters": [
@@ -318,9 +308,7 @@
     },
     "/admin/member/v1/u/{rallyId}/lastLoginTimestamp": {
       "put": {
-        "tags": [
-          "Admin"
-        ],
+        "tags": ["Admin"],
         "summary": "Update the last login field for a member",
         "operationId": "updateMemberLastLogin",
         "parameters": [
@@ -366,9 +354,7 @@
     },
     "/ext/rest/member/v1/u/{rallyId}": {
       "put": {
-        "tags": [
-          "External"
-        ],
+        "tags": ["External"],
         "summary": "Update a member's profile.",
         "operationId": "updateMemberProfile-External",
         "parameters": [
@@ -437,9 +423,7 @@
     },
     "/ext/rest/member/v1/u/{rallyId}/programs/{programId}": {
       "get": {
-        "tags": [
-          "External"
-        ],
+        "tags": ["External"],
         "summary": "Get info on single member account for external clients.",
         "operationId": "getExternalMemberInfo",
         "parameters": [
@@ -495,9 +479,7 @@
     },
     "/ext/rest/member/v1/u/{rallyId}/programs/{programId}/profile": {
       "put": {
-        "tags": [
-          "External"
-        ],
+        "tags": ["External"],
         "summary": "Update a member's program profile.",
         "operationId": "updateProgramProfile-External",
         "parameters": [
@@ -574,9 +556,7 @@
     },
     "/ext/rest/member/v1/u/{rallyId}/programs/{programId}/status": {
       "put": {
-        "tags": [
-          "External"
-        ],
+        "tags": ["External"],
         "summary": "Reset a member's track ID and status under certain conditions.",
         "description": "Allows resetting member track ID and status under 2 conditions: <ol>\n  <li>\n    Someone may have been disqualified when they should not have. This API provides the ability to reset the member\n    to a needsQualification status.\n  </li>\n  <li>\n    If member is stuck in non-IWS track and needs classroom, then the API allows changing the member's track ID to\n    an IWS track ID.\n  </li>\n</ol>",
         "operationId": "resetMemberTrackStatus",
@@ -659,9 +639,7 @@
     },
     "/ext/rest/member/v1/u/{rallyId}/programs/{programId}/programStatus": {
       "put": {
-        "tags": [
-          "External"
-        ],
+        "tags": ["External"],
         "summary": "Transition a member's program track status.",
         "description": "Health Cloud needs the ability to update a member's program status.\nThis API currently provides the ability to update the member Program Status\nto a Disenrolled, NeedsQualification, NeedsClassroom and Completed status\nfor now. TrackId is required if current enrollment status is not Disqualified\nor NeedsQualification.",
         "operationId": "transitionMemberProgramTrackStatus-External",
@@ -744,9 +722,7 @@
     },
     "/ext/rest/member/v1/u/{rallyId}/programs/{programId}/tracks/{trackId}/status": {
       "put": {
-        "tags": [
-          "External"
-        ],
+        "tags": ["External"],
         "summary": "Update a member's program track status.",
         "description": "Health Cloud needs the ability to update a member's program track\nstatus. This API currently provides the ability to update the member Program\nTrack Status to a disenrolled, NeedsQualification, NeedsClassroom and Completed\nstatus for now.",
         "operationId": "updateMemberProgramTrackStatus-External",
@@ -838,9 +814,7 @@
     },
     "/ext/rest/member/v1/u/programs/{programId}/tracks/{trackId}": {
       "get": {
-        "tags": [
-          "External"
-        ],
+        "tags": ["External"],
         "summary": "Get all member info for external clients.",
         "operationId": "getAllExternalMemberInfo",
         "parameters": [
@@ -937,9 +911,7 @@
     },
     "/ext/rest/member/v1/u/{rallyId}/memberships": {
       "delete": {
-        "tags": [
-          "External"
-        ],
+        "tags": ["External"],
         "summary": "Terminate all classroom memberships for a user.",
         "description": "Terminate all classroom memberships for a user.",
         "operationId": "terminateMemberships",
@@ -1030,9 +1002,7 @@
     },
     "/internal/member/v1/u/{rallyId}": {
       "get": {
-        "tags": [
-          "Internal"
-        ],
+        "tags": ["Internal"],
         "summary": "Get the member account summary for a specified rally ID.",
         "operationId": "getMemberAccountSummary-Internal",
         "parameters": [
@@ -1086,9 +1056,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Internal"
-        ],
+        "tags": ["Internal"],
         "summary": "Create a new Coaching member account.",
         "operationId": "createMemberAccount",
         "parameters": [
@@ -1172,9 +1140,7 @@
     },
     "/internal/member/v1/u/{rallyId}/programs/{programId}": {
       "put": {
-        "tags": [
-          "Internal"
-        ],
+        "tags": ["Internal"],
         "summary": "Enroll member in a new program.",
         "operationId": "enrollInProgram",
         "parameters": [
@@ -1261,9 +1227,7 @@
     },
     "/internal/member/v1/u/{rallyId}/programs/{programId}/classrooms/{classroomId}/enroll": {
       "post": {
-        "tags": [
-          "Internal"
-        ],
+        "tags": ["Internal"],
         "summary": "Enroll a member in a classroom.",
         "operationId": "enrollInClassroom",
         "parameters": [
@@ -1349,9 +1313,7 @@
     },
     "/internal/member/v1/u/{rallyId}/programs/{programId}/tracks/{currentTrackId}/joinNextTrack": {
       "post": {
-        "tags": [
-          "Internal"
-        ],
+        "tags": ["Internal"],
         "summary": "Complete a user's current track and join its next track.",
         "operationId": "joinNextTrack",
         "parameters": [
@@ -1420,9 +1382,7 @@
     },
     "/internal/member/v1/u/{rallyId}/programs/{programId}/tracks/{trackId}/statuses": {
       "post": {
-        "tags": [
-          "Internal"
-        ],
+        "tags": ["Internal"],
         "summary": "Create MemberProgramTrackStatus record with NeedsClassroom Status for\na Member",
         "operationId": "createMemberProgramTrackStatus",
         "parameters": [
@@ -1481,9 +1441,7 @@
     },
     "/internal/member/v1/u/{rallyId}/programs/{programId}/tracks/{trackId}/statuses/{status}": {
       "put": {
-        "tags": [
-          "Internal"
-        ],
+        "tags": ["Internal"],
         "summary": "Update a member's program track status.",
         "operationId": "updateMemberProgramTrackStatus-Internal",
         "parameters": [
@@ -1556,9 +1514,7 @@
     },
     "/internal/member/v1/u/{rallyId}/personalData": {
       "delete": {
-        "tags": [
-          "Internal"
-        ],
+        "tags": ["Internal"],
         "summary": "Delete the user personal data for a rallyId.",
         "operationId": "deleteMemberPersonalData",
         "parameters": [
@@ -1584,9 +1540,7 @@
     },
     "/rest/member/v1/chatAppInfo": {
       "get": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Get relevant chat application information for SendBird.",
         "operationId": "getChatInfo",
         "parameters": [
@@ -1631,9 +1585,7 @@
     },
     "/rest/member/v1/u/current": {
       "put": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Update a member's profile.",
         "operationId": "updateMemberProfile",
         "parameters": [
@@ -1700,9 +1652,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Create a Real Appeal member account.",
         "operationId": "createMemberAccount",
         "parameters": [
@@ -1782,9 +1732,7 @@
     },
     "/rest/member/v2/u/current": {
       "post": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Create a new Coaching member account.",
         "operationId": "createMemberAccountV2",
         "parameters": [
@@ -1868,9 +1816,7 @@
     },
     "/rest/member/v1/u/current/postLogin": {
       "post": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Submit a user's login.",
         "description": "Submitting a user's login includes updating the last login timestamp\nand if the MEMBER_LOGIN_TIMEZONE_ENABLED configuration is enabled, then also\nsetting the user's timezone if empty.",
         "operationId": "postLogin",
@@ -1917,9 +1863,7 @@
     },
     "/rest/member/v1/u/current/programs/{programId}": {
       "put": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Enroll member in a new program.",
         "operationId": "enrollInProgram",
         "parameters": [
@@ -2006,9 +1950,7 @@
     },
     "/rest/member/v1/u/current/programs/{programId}/profile": {
       "put": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Update a member's program profile.",
         "operationId": "updateProgramProfile",
         "parameters": [
@@ -2085,9 +2027,7 @@
     },
     "/rest/member/v1/u/current/programs/{programId}/stratification": {
       "post": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Start survey for the selected program.",
         "operationId": "startProgramStratificationSurvey",
         "parameters": [
@@ -2143,9 +2083,7 @@
     },
     "/rest/member/v1/u/current/programs/{programId}/tracks/{trackId}": {
       "delete": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Cancel a member's program enrollment.",
         "operationId": "cancelProgramEnrollment",
         "parameters": [
@@ -2219,9 +2157,7 @@
     },
     "/rest/member/v1/u/current/programTrackStatuses": {
       "get": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Get a list of the member's program track statuses.",
         "operationId": "getMemberProgramTrackStatuses",
         "parameters": [
@@ -2288,9 +2224,7 @@
     },
     "/rest/member/v1/u/current/qualification/profile": {
       "get": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Get a member's qualification profile.",
         "operationId": "getQualificationProfile",
         "parameters": [
@@ -2345,9 +2279,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Save partial qualification information.",
         "operationId": "saveQualificationProfile",
         "parameters": [
@@ -2411,9 +2343,7 @@
     },
     "/rest/member/v2/u/current/qualification/profile": {
       "post": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Save partial qualification information.",
         "description": "This V2 endpoint serves as an alternative to the V1 endpoint for\nthe UI clients to interact with the qualification profile without needing\nto directly query and request the qualification profile separately.",
         "operationId": "saveQualificationProfileV2",
@@ -2443,9 +2373,7 @@
     },
     "/rest/member/v1/u/current/qualification/segment": {
       "post": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Segment a user based on their qualification information.",
         "operationId": "qualifyAndSegment",
         "parameters": [
@@ -2524,9 +2452,7 @@
     },
     "/rest/member/v2/u/current/qualification/segment": {
       "post": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Segment a user based on their qualification information and track ID.",
         "operationId": "qualifyAndSegmentV2",
         "parameters": [
@@ -2614,9 +2540,7 @@
     },
     "/rest/member/v1/u/current/rallyId": {
       "get": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Get the rally ID for the current user.",
         "operationId": "getRallyId",
         "parameters": [
@@ -2661,9 +2585,7 @@
     },
     "/rest/member/v1/u/current/summary": {
       "get": {
-        "tags": [
-          "Member"
-        ],
+        "tags": ["Member"],
         "summary": "Get the member account summary for a specified rally ID.",
         "operationId": "getMemberAccountSummary",
         "parameters": [
@@ -2825,9 +2747,7 @@
         ]
       },
       "PartialQualificationBase": {
-        "required": [
-          "programId"
-        ],
+        "required": ["programId"],
         "type": "object",
         "properties": {
           "programId": {
@@ -2886,9 +2806,7 @@
         }
       },
       "UpdateMemberEmailRequest": {
-        "required": [
-          "email"
-        ],
+        "required": ["email"],
         "type": "object",
         "properties": {
           "email": {
@@ -3076,10 +2994,7 @@
         ]
       },
       "MemberProgramProfileBase": {
-        "required": [
-          "gender",
-          "programId"
-        ],
+        "required": ["gender", "programId"],
         "type": "object",
         "properties": {
           "programId": {
@@ -3094,9 +3009,7 @@
         }
       },
       "TrackStatusUpdateRequest": {
-        "required": [
-          "status"
-        ],
+        "required": ["status"],
         "type": "object",
         "properties": {
           "status": {
@@ -3174,10 +3087,7 @@
             "$ref": "#/components/schemas/CreateMemberRequestBase"
           },
           {
-            "required": [
-              "enrollmentOption",
-              "trackId"
-            ],
+            "required": ["enrollmentOption", "trackId"],
             "type": "object",
             "properties": {
               "trackId": {
@@ -3194,9 +3104,7 @@
         ]
       },
       "CreateMemberRequestBase": {
-        "required": [
-          "programId"
-        ],
+        "required": ["programId"],
         "type": "object",
         "properties": {
           "programId": {
@@ -3234,10 +3142,7 @@
         ]
       },
       "EnrollInProgramRequest": {
-        "required": [
-          "enrollmentOption",
-          "trackId"
-        ],
+        "required": ["enrollmentOption", "trackId"],
         "type": "object",
         "properties": {
           "trackId": {
@@ -3255,9 +3160,7 @@
         "type": "string"
       },
       "EnrollClassroomRequest": {
-        "required": [
-          "trackId"
-        ],
+        "required": ["trackId"],
         "type": "object",
         "properties": {
           "trackId": {
@@ -3279,9 +3182,7 @@
         ]
       },
       "ChatInfoResponse": {
-        "required": [
-          "appId"
-        ],
+        "required": ["appId"],
         "type": "object",
         "properties": {
           "appId": {
@@ -3290,12 +3191,7 @@
         }
       },
       "SurveyMetadata": {
-        "required": [
-          "chapters",
-          "instanceId",
-          "surveyId",
-          "surveyVersion"
-        ],
+        "required": ["chapters", "instanceId", "surveyId", "surveyVersion"],
         "type": "object",
         "properties": {
           "instanceId": {
@@ -3357,9 +3253,7 @@
         }
       },
       "RallyIdResponse": {
-        "required": [
-          "rallyId"
-        ],
+        "required": ["rallyId"],
         "type": "object",
         "properties": {
           "rallyId": {
@@ -3369,16 +3263,10 @@
       },
       "Gender": {
         "type": "string",
-        "enum": [
-          "male",
-          "female",
-          "na"
-        ]
+        "enum": ["male", "female", "na"]
       },
       "BloodTestResults": {
-        "required": [
-          "lastModifiedAt"
-        ],
+        "required": ["lastModifiedAt"],
         "type": "object",
         "properties": {
           "a1c": {
@@ -3396,9 +3284,7 @@
         }
       },
       "BloodTestMeasurements": {
-        "required": [
-          "value"
-        ],
+        "required": ["value"],
         "type": "object",
         "properties": {
           "value": {
@@ -3424,9 +3310,7 @@
         }
       },
       "EthnicityAndRace": {
-        "required": [
-          "race"
-        ],
+        "required": ["race"],
         "type": "object",
         "properties": {
           "ethnicity": {
@@ -3443,22 +3327,13 @@
       },
       "QualificationSource": {
         "type": "string",
-        "enum": [
-          "disqualified",
-          "gluctest",
-          "gdm",
-          "risktest"
-        ]
+        "enum": ["disqualified", "gluctest", "gdm", "risktest"]
       },
       "RallyId_2": {
         "type": "string"
       },
       "MemberContactInfo": {
-        "required": [
-          "canEmail",
-          "canSms",
-          "email"
-        ],
+        "required": ["canEmail", "canSms", "email"],
         "type": "object",
         "properties": {
           "email": {
@@ -3485,11 +3360,7 @@
         }
       },
       "ClientInfo": {
-        "required": [
-          "id",
-          "name",
-          "programId"
-        ],
+        "required": ["id", "name", "programId"],
         "type": "object",
         "properties": {
           "id": {
@@ -3518,10 +3389,7 @@
         }
       },
       "InsurerInfo": {
-        "required": [
-          "id",
-          "name"
-        ],
+        "required": ["id", "name"],
         "type": "object",
         "properties": {
           "id": {
@@ -3534,10 +3402,7 @@
         }
       },
       "BodyMeasurement": {
-        "required": [
-          "unit",
-          "value"
-        ],
+        "required": ["unit", "value"],
         "type": "object",
         "properties": {
           "value": {
@@ -3551,18 +3416,10 @@
       },
       "DwcTrackEnrollmentOption": {
         "type": "string",
-        "enum": [
-          "Online Coaching",
-          "Personal Coaching"
-        ]
+        "enum": ["Online Coaching", "Personal Coaching"]
       },
       "EligibilityRequest": {
-        "required": [
-          "dateOfBirth",
-          "firstName",
-          "lastName",
-          "memberId"
-        ],
+        "required": ["dateOfBirth", "firstName", "lastName", "memberId"],
         "type": "object",
         "properties": {
           "firstName": {
@@ -3593,9 +3450,7 @@
         "type": "string"
       },
       "ChapterMetadata": {
-        "required": [
-          "name"
-        ],
+        "required": ["name"],
         "type": "object",
         "properties": {
           "name": {
@@ -3643,11 +3498,7 @@
       },
       "Ethnicity": {
         "type": "string",
-        "enum": [
-          "hispanicLatino",
-          "notHispanicLatino",
-          "na"
-        ]
+        "enum": ["hispanicLatino", "notHispanicLatino", "na"]
       },
       "Race": {
         "type": "string",
@@ -3661,11 +3512,7 @@
         ]
       },
       "PostalAddress": {
-        "required": [
-          "address",
-          "country",
-          "postalCode"
-        ],
+        "required": ["address", "country", "postalCode"],
         "type": "object",
         "properties": {
           "address": {
@@ -3782,12 +3629,7 @@
         ]
       },
       "QuestionDefinitionBase": {
-        "required": [
-          "choices",
-          "questionId",
-          "tags",
-          "text"
-        ],
+        "required": ["choices", "questionId", "tags", "text"],
         "type": "object",
         "properties": {
           "questionId": {
@@ -3882,10 +3724,7 @@
             "$ref": "#/components/schemas/QuestionDefinitionBase"
           },
           {
-            "required": [
-              "correctAnswerExplanation",
-              "correctAnswerId"
-            ],
+            "required": ["correctAnswerExplanation", "correctAnswerId"],
             "type": "object",
             "properties": {
               "correctAnswerId": {
@@ -3932,10 +3771,7 @@
         ]
       },
       "SurveyClassification": {
-        "required": [
-          "surveyCategory",
-          "surveyType"
-        ],
+        "required": ["surveyCategory", "surveyType"],
         "type": "object",
         "properties": {
           "surveyCategory": {
@@ -3947,11 +3783,7 @@
         }
       },
       "QuestionMetadata": {
-        "required": [
-          "creatorUserId",
-          "locale",
-          "published"
-        ],
+        "required": ["creatorUserId", "locale", "published"],
         "type": "object",
         "properties": {
           "creatorUserId": {
@@ -4004,11 +3836,7 @@
         ]
       },
       "ChoiceBase": {
-        "required": [
-          "answerId",
-          "answerText",
-          "exclusiveWidth"
-        ],
+        "required": ["answerId", "answerText", "exclusiveWidth"],
         "type": "object",
         "properties": {
           "answerId": {
@@ -4048,18 +3876,12 @@
           },
           "kind": {
             "type": "string",
-            "enum": [
-              "inputChoice",
-              "selectChoice"
-            ]
+            "enum": ["inputChoice", "selectChoice"]
           }
         }
       },
       "InputChoice": {
-        "required": [
-          "optional",
-          "restrictions"
-        ],
+        "required": ["optional", "restrictions"],
         "allOf": [
           {
             "$ref": "#/components/schemas/ChoiceBase"
@@ -4144,9 +3966,7 @@
             "$ref": "#/components/schemas/RestrictionBase"
           },
           {
-            "required": [
-              "min"
-            ],
+            "required": ["min"],
             "type": "object",
             "properties": {
               "min": {
@@ -4158,19 +3978,12 @@
         ]
       },
       "RestrictionBase": {
-        "required": [
-          "kind"
-        ],
+        "required": ["kind"],
         "type": "object",
         "properties": {
           "kind": {
             "type": "string",
-            "enum": [
-              "mininclusive",
-              "maxinclusive",
-              "regex",
-              "wholenumber"
-            ]
+            "enum": ["mininclusive", "maxinclusive", "regex", "wholenumber"]
           }
         }
       },
@@ -4180,9 +3993,7 @@
             "$ref": "#/components/schemas/RestrictionBase"
           },
           {
-            "required": [
-              "max"
-            ],
+            "required": ["max"],
             "type": "object",
             "properties": {
               "max": {
@@ -4199,9 +4010,7 @@
             "$ref": "#/components/schemas/RestrictionBase"
           },
           {
-            "required": [
-              "regex"
-            ],
+            "required": ["regex"],
             "type": "object",
             "properties": {
               "regex": {
@@ -4220,9 +4029,7 @@
             "$ref": "#/components/schemas/RestrictionBase"
           },
           {
-            "required": [
-              "wholeNumber"
-            ],
+            "required": ["wholeNumber"],
             "type": "object",
             "properties": {
               "wholeNumber": {

@@ -1,8 +1,8 @@
 const utils = require("./utils");
 const pg = require("./payload-generator");
-const shell = require("shelljs");
+import * as shell from "shelljs";
 
-function generateTest(endpoint, operation, schema) {
+export function generateTest(endpoint, operation, schema) {
   const hygen = `"./node_modules/.bin/hygen"`;
   const endpointParam = `--endpoint ${endpoint}`;
   const operationParam = `--operation ${operation}`;
@@ -43,7 +43,3 @@ function generateTest(endpoint, operation, schema) {
     });
   }
 }
-
-module.exports = {
-  generateTest
-};
