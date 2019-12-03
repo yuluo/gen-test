@@ -1,6 +1,8 @@
 const path = require("path");
 const slsw = require("serverless-webpack");
 const nodeExternals = require("webpack-node-externals");
+const webpackCopy = require('copy-webpack-plugin');
+
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 module.exports = {
@@ -43,11 +45,10 @@ module.exports = {
     ]
   },
   plugins: [
-    // new ForkTsCheckerWebpackPlugin({
-    //   eslint: true,
-    //   eslintOptions: {
-    //     cache: true
-    //   }
-    // })
+    new webpackCopy([
+        { from: "src/test-libs", to: "generated/node_modules/test-libs"},
+        { from: "config", to: "generated/node_modules/config"},
+        { from: "_templates", to: "_templates"}
+    ])
   ]
 };

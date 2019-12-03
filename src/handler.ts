@@ -1,6 +1,5 @@
-import { jsonpath } from "jsonpath";
+import * as jsonpath from "jsonpath";
 import SwaggerParser from "swagger-parser";
-import * as shell from "shelljs";
 import { generateTest } from "./libs/require-test-generator";
 import { writeFileUtil } from "./libs/utils";
 import { APIGatewayEvent, Handler } from "aws-lambda";
@@ -9,8 +8,7 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
   const apiObject = await SwaggerParser.dereference(event);
   const paths = apiObject.paths;
 
-  _setupWorkspace();
-  _createTestConfig(event, apiObject);
+  //_createTestConfig(event, apiObject);
 
   Object.keys(paths).forEach(pathKey => {
     const path = paths[pathKey];
@@ -31,14 +29,8 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
   });
 };
 
-function _setupWorkspace() {
-  shell.rm("-rf", "generated/");
-  shell.mkdir("-p", "generated/node_modules");
-  shell.cp("-R", "src/test-libs/", "generated/node_modules");
-  shell.cp("-R", "config", "generated/node_modules");
-}
-
 function _createTestConfig(url, apiObject) {
+  //need to fix url splitting
   const urlArray = url.split("/");
   const rootUrl = urlArray.slice(0, urlArray.length - 1).join("/");
   const baseUrls = apiObject.servers.map(server => {

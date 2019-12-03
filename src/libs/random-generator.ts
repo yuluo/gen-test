@@ -1,56 +1,44 @@
-const rs = require("randomstring");
+import * as randomstring from "randomstring";
 
-function randomBinary() {
-  return rs.generate({
+export function randomBinary() {
+  return randomstring.generate({
     charset: "01"
   });
 }
 
-function randomBoolean() {
-  return rs.generate().length % 2 === 0;
+export function randomBoolean() {
+  return randomstring.generate().length % 2 === 0;
 }
 
-function randomByte() {
-  return rs.generate({
+export function randomByte() {
+  return randomstring.generate({
     charset: "hex"
   });
 }
 
-function randomDatetime() {
+export function randomDatetime() {
   return new Date().toISOString();
 }
 
-function randomDate() {
+export function randomDate() {
   return new Date().toLocaleDateString();
 }
 
-function randomEnum(enums) {
+export function randomEnum(enums) {
   let randomIndex = randomInteger(0, enums.length);
   return enums[randomIndex];
 }
 
-function randomInteger(min = 0, max = 10000) {
+export function randomInteger(min = 0, max = 10000) {
   const minFloor = Math.ceil(min);
   const maxFloor = Math.floor(max);
   return Math.floor(randomNumber(minFloor, maxFloor)) + minFloor;
 }
 
-function randomNumber(min = 0, max = 10000) {
+export function randomNumber(min = 0, max = 10000) {
   return Math.random() * (max - min) + min;
 }
 
-function randomString() {
-  return rs.generate();
+export function randomString() {
+  return randomstring.generate();
 }
-
-module.exports = {
-  randomBinary,
-  randomBoolean,
-  randomByte,
-  randomDatetime,
-  randomDate,
-  randomEnum,
-  randomInteger,
-  randomNumber,
-  randomString
-};

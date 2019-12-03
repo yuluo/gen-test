@@ -1,4 +1,4 @@
-const rg = require("./random-generator");
+import * as randomRenerator from "./random-generator"
 
 const typeTemplate = {
   integer: "randomInteger",
@@ -13,7 +13,8 @@ const typeTemplate = {
   }
 };
 
-function generatePayloadTemplate(properties) {
+//TODO: add wrapper function
+export function generatePayloadTemplate(properties) {
   let payloadTemplate = {};
   Object.keys(properties).forEach(key => {
     let type = properties[key].type;
@@ -23,7 +24,7 @@ function generatePayloadTemplate(properties) {
   return payloadTemplate;
 }
 
-function processProperty(type, property) {
+export function processProperty(type, property) {
   if (type === "object") {
     return generatePayloadTemplate(property.properties);
   } else if (type === "array") {
@@ -33,25 +34,21 @@ function processProperty(type, property) {
   } else if (type === "string") {
     return _generateStringTemplate(property);
   } else {
-    return rg[typeTemplate[type]].call(null);
+    return randomRenerator[typeTemplate[type]].call(null);
   }
 }
 
 function _generateStringTemplate(stringProperty) {
   let stringTemplate = "";
   if (stringProperty.enum) {
-    stringTemplate = rg.randomEnum(stringProperty.enum);
+    stringTemplate = randomRenerator.randomEnum(stringProperty.enum);
   } else if (stringProperty.format) {
-    console.log(rg[typeTemplate.string[stringProperty.format]]);
-    stringTemplate = rg[typeTemplate.string[stringProperty.format]].call(null);
+    console.log(randomRenerator[typeTemplate.string[stringProperty.format]]);
+    stringTemplate = randomRenerator[typeTemplate.string[stringProperty.format]].call(null);
   } else {
-    stringTemplate = rg.randomString();
+    stringTemplate = randomRenerator.randomString();
   }
 
   return stringTemplate;
 }
 
-module.exports = {
-  generatePayloadTemplate,
-  processProperty
-};
