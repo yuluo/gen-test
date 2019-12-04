@@ -8,7 +8,7 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
   const apiObject = await SwaggerParser.dereference(event);
   const paths = apiObject.paths;
 
-  //_createTestConfig(event, apiObject);
+  _createTestConfig(event, apiObject);
 
   Object.keys(paths).forEach(pathKey => {
     const path = paths[pathKey];
