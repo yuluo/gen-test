@@ -1,9 +1,9 @@
-const utils = require("./utils");
-const pg = require("./payload-generator");
-const shell = require("shelljs");
+import {writeFileUtil} from "./utils";
+import * as shell from "shelljs";
+import { processProperty, generatePayloadTemplate } from "./payload-generator";
 
-function generateTest(endpoint, operation, schema) {
-  const hygen = `"./node_modules/.bin/hygen"`;
+export function generateTest(endpoint, operation, schema) {
+  const hygen = `hygen`;
   const endpointParam = `--endpoint ${endpoint}`;
   const operationParam = `--operation ${operation}`;
   const targetDir = `./generated/${endpoint}/${operation}/require-test`;
@@ -15,11 +15,11 @@ function generateTest(endpoint, operation, schema) {
   //generate positive test
   let template = null;
   if (schema.type === "array") {
-    template = pg.processProperty("array", schema);
+    template = processProperty("array", schema);
   } else {
-    template = pg.generatePayloadTemplate(schema.properties);
+    template = generatePayloadTemplate(schema.properties);
   }
-  utils.writeFile(
+  writeFileUtil(
     `${targetDir}/payload-1.json`,
     JSON.stringify(template, null, 2)
   );
@@ -34,7 +34,8 @@ function generateTest(endpoint, operation, schema) {
       let payload = { ...template };
       delete payload[property];
 
-      utils.writeFile(
+      //TODO: refactor to use hygon
+      writeFileUtil(
         `${targetDir}/${payloadFile}`,
         JSON.stringify(payload, null, 2)
       );
@@ -43,7 +44,3 @@ function generateTest(endpoint, operation, schema) {
     });
   }
 }
-
-module.exports = {
-  generateTest
-};

@@ -5,5 +5,9 @@ jspm_packages
 # Serverless directories
 .serverless
 
-# ide directories
+# Webpack directories
+.webpack
+
+# IDE Configs
 .vscode
+vscode
