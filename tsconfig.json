@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": ["es6"],
     "removeComments": true,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "sourceMap": true,
     "target": "es6",
-    "resolveJsonModule": true
+    "types": ["reflect-metadata"]
   },
   "include": ["./**/*.ts"],
   "exclude": [

@@ -1,8 +1,11 @@
+import { injectable, inject } from "inversify";
+
 import * as jsonpath from "jsonpath";
 import SwaggerParser from "swagger-parser";
 import { generateTest } from "./libs/require-test-generator";
 import { writeFileUtil } from "./libs/utils";
 import { APIGatewayEvent, Handler } from "aws-lambda";
+
 
 export const parseSpec: Handler = async (event: APIGatewayEvent) => {
   const apiObject = await SwaggerParser.dereference(event);
@@ -32,7 +35,7 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
 function _createTestConfig(url, apiObject) {
   //need to fix url splitting
   const urlArray = url.split("/");
-  const rootUrl = urlArray.slice(0, urlArray.length - 1).join("/");
+  const rootUrl = urlArray.slice(0, 3).join("/");
   const baseUrls = apiObject.servers.map(server => {
     var absolutePattern = /^https?:\/\//i;
     if (absolutePattern.test(server.url)) {
