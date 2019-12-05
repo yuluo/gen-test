@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 
-import * as jsonpath from "jsonpath";
+import jsonpath from "jsonpath";
 import SwaggerParser from "swagger-parser";
 import { generateTest } from "./libs/require-test-generator";
 import { writeFileUtil } from "./libs/utils";
