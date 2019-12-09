@@ -15,7 +15,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     @inject(TYPES.IUtils) private utils: IUtils
   ) {}
 
-  public generateTest(endpoint: string, operation: string, schema: object) {
+  public generateTest(endpoint: string, operation: string, schema: any) {
     const hygen = `hygen`;
     const endpointParam = `--endpoint ${endpoint}`;
     const operationParam = `--operation ${operation}`;

@@ -49,7 +49,7 @@ module.exports = {
         { from: "src/test-libs", to: "generated/node_modules/test-libs"},
         { from: "config", to: "generated/node_modules/config"},
         { from: "_templates", to: "_templates"},
-        { from: "jest.config.js", to: "generated/jest.config.js"},
+        { from: "src/test-libs/jest.config.js", to: "generated/jest.config.js"},
         { from: "node_modules/ts-jest", to: "generated/node_modules/ts-jest"}
     ])
   ]

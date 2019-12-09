@@ -8,7 +8,6 @@ module.exports = {
   transform: {
     "^.+\\.(ts|tsx)$": "./node_modules/ts-jest/preprocessor.js"
   },
-  testMatch: ["**/*/*.spec.ts"],
-  testEnvironment: "node",
-  setupFiles: ["./inversify.config.ts"]
+  testMatch: ["**/*/*.(spec|test).(ts|js)"],
+  testEnvironment: "node"
 };

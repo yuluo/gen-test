@@ -16,7 +16,7 @@ export interface IRandomGenerator {
 }
 
 export interface IRequireTestGenerator {
-    generateTest(endpoint: string, operation: string, schema: object): void
+    generateTest(endpoint: string, operation: string, schema: any): void
 }
 
 export interface IUtils {
