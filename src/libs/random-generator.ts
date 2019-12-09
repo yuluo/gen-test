@@ -36,7 +36,7 @@ export class RandomGenerator implements IRandomGenerator {
   public randomInteger(min = 0, max = 10000) {
     const minFloor = Math.ceil(min);
     const maxFloor = Math.floor(max);
-    return Math.floor(this.randomNumber(minFloor, maxFloor)) + minFloor;
+    return Math.floor(this.randomNumber(minFloor, maxFloor));
   }
 
   public randomNumber(min = 0, max = 10000) {
