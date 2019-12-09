@@ -10,8 +10,8 @@ export interface IRandomGenerator {
   randomDatetime(): string;
   randomDate(): string;
   randomEnum(enums: string[]): string;
-  randomInteger(): number;
-  randomNumber(): number;
+  randomInteger(min, max): number;
+  randomNumber(min, max): number;
   randomString(): string;
 }
 
