@@ -1,6 +1,5 @@
 export interface IPayloadGenerator {
-  generatePayloadTemplate(properties: object): object;
-  processProperty(type: string, processProperty: object): any;
+  generatePayloadTemplate(schema: any): object;
 }
 
 export interface IRandomGenerator {

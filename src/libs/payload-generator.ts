@@ -3,15 +3,15 @@ import { TYPES } from "../types";
 import { IRandomGenerator, IPayloadGenerator } from "../interfaces";
 
 const typeTemplate = {
-  integer: "randomInteger",
-  number: "randomNumber",
-  boolean: "randomBoolean",
-  string: {
-    byte: "randomByte",
-    binary: "randomBinary",
+  "integer": "randomInteger",
+  "number": "randomNumber",
+  "boolean": "randomBoolean",
+  "string": {
+    "byte": "randomByte",
+    "binary": "randomBinary",
     "date-time": "randomDatetime",
-    date: "randomDate",
-    password: "randomString"
+    "date": "randomDate",
+    "password": "randomString"
   }
 };
 
@@ -21,23 +21,31 @@ export class PayloadGenerator implements IPayloadGenerator {
     @inject(TYPES.IRandomGenerator) private randomGenerator: IRandomGenerator
   ) {}
 
+  public generatePayloadTemplate(schema: any): object {
+    if (schema.type === "array") {
+      return this._processProperty("array", schema);
+    } else {
+      return this._processObject(schema.properties);
+    }
+  }
+
   //TODO: add wrapper function
-  public generatePayloadTemplate(properties: object): object {
+  private _processObject(properties: object): object {
     let payloadTemplate = {};
     Object.keys(properties).forEach(key => {
       let type = properties[key].type;
-      payloadTemplate[key] = this.processProperty(type, properties[key]);
+      payloadTemplate[key] = this._processProperty(type, properties[key]);
     });
 
     return payloadTemplate;
   }
 
-  public processProperty(type, property) {
+  public _processProperty(type: string, property) {
     if (type === "object") {
-      return this.generatePayloadTemplate(property.properties);
+      return this._processObject(property.properties);
     } else if (type === "array") {
       let array = [];
-      array.push(this.processProperty(property.items.type, property.items));
+      array.push(this._processProperty(property.items.type, property.items));
       return array;
     } else if (type === "string") {
       return this._generateStringTemplate(property);

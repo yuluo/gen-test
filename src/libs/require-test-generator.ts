@@ -26,14 +26,8 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     shell.exec(scaffoldingCmd);
 
     //generate positive test
-    let template = null;
-    if (schema.type === "array") {
-      template = this.payloadGenerator.processProperty("array", schema);
-    } else {
-      template = this.payloadGenerator.generatePayloadTemplate(
-        schema.properties
-      );
-    }
+    let template = this.payloadGenerator.generatePayloadTemplate(schema);
+    
     this.utils.writeFileUtil(
       `${targetDir}/payload-1.json`,
       JSON.stringify(template, null, 2)
