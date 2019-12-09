@@ -5,7 +5,7 @@
   "main": "src/handler.js",
   "scripts": {
     "test": "jest",
-    "prettier": "./node_modules/.bin/prettier --write ./**/*.ts ./**/*.json"
+    "prettier": "./node_modules/.bin/prettier --write ./**/*/*.ts ./**/*.json"
   },
   "repository": {
     "type": "git",
@@ -34,12 +34,15 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
+    "@types/jsonpath": "^0.2.0",
     "hygen": "^5.0.3",
+    "inversify": "^5.0.1",
     "jsonpath": "^1.0.2",
     "randomstring": "^1.1.5",
+    "reflect-metadata": "^0.1.13",
     "request": "^2.88.0",
     "shelljs": "^0.8.3",
-    "swagger-parser": "^8.0.3",
-    "source-map-support": "^0.5.10"
+    "source-map-support": "^0.5.10",
+    "swagger-parser": "^8.0.3"
   }
 }

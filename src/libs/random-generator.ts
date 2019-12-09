@@ -1,44 +1,49 @@
 import * as randomstring from "randomstring";
+import { injectable } from "inversify";
+import { IRandomGenerator } from "../interfaces";
 
-export function randomBinary() {
-  return randomstring.generate({
-    charset: "01"
-  });
-}
+@injectable()
+export class RandomGenerator implements IRandomGenerator {
+  public randomBinary() {
+    return randomstring.generate({
+      charset: "01"
+    });
+  }
 
-export function randomBoolean() {
-  return randomstring.generate().length % 2 === 0;
-}
+  public randomBoolean() {
+    return randomstring.generate().length % 2 === 0;
+  }
 
-export function randomByte() {
-  return randomstring.generate({
-    charset: "hex"
-  });
-}
+  public randomByte() {
+    return randomstring.generate({
+      charset: "hex"
+    });
+  }
 
-export function randomDatetime() {
-  return new Date().toISOString();
-}
+  public randomDatetime() {
+    return new Date().toISOString();
+  }
 
-export function randomDate() {
-  return new Date().toLocaleDateString();
-}
+  public randomDate() {
+    return new Date().toLocaleDateString();
+  }
 
-export function randomEnum(enums) {
-  let randomIndex = randomInteger(0, enums.length);
-  return enums[randomIndex];
-}
+  public randomEnum(enums: string[]) {
+    let randomIndex = this.randomInteger(0, enums.length);
+    return enums[randomIndex];
+  }
 
-export function randomInteger(min = 0, max = 10000) {
-  const minFloor = Math.ceil(min);
-  const maxFloor = Math.floor(max);
-  return Math.floor(randomNumber(minFloor, maxFloor)) + minFloor;
-}
+  public randomInteger(min = 0, max = 10000) {
+    const minFloor = Math.ceil(min);
+    const maxFloor = Math.floor(max);
+    return Math.floor(this.randomNumber(minFloor, maxFloor)) + minFloor;
+  }
 
-export function randomNumber(min = 0, max = 10000) {
-  return Math.random() * (max - min) + min;
-}
+  public randomNumber(min = 0, max = 10000) {
+    return Math.random() * (max - min) + min;
+  }
 
-export function randomString() {
-  return randomstring.generate();
+  public randomString() {
+    return randomstring.generate();
+  }
 }

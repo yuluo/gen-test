@@ -1,10 +1,16 @@
-import * as jsonpath from "jsonpath";
+import { injectable, inject } from "inversify";
+
+import jsonpath from "jsonpath";
 import SwaggerParser from "swagger-parser";
-import { generateTest } from "./libs/require-test-generator";
-import { writeFileUtil } from "./libs/utils";
 import { APIGatewayEvent, Handler } from "aws-lambda";
+import {IUtils, IRequireTestGenerator} from "./interfaces";
+import {container} from "../inversify.config";
+import { TYPES } from "./types";
+
 
 export const parseSpec: Handler = async (event: APIGatewayEvent) => {
+  const requireTestGenerator = container.get<IRequireTestGenerator>(TYPES.IRequireTestGenerator);
+
   const apiObject = await SwaggerParser.dereference(event);
   const paths = apiObject.paths;
 
@@ -22,7 +28,7 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
         if (jsonSchema) {
           //console.log(JSON.stringify(jsonSchema, null, 2));
           //let template = _generatePayloadTemplate(jsonSchema.properties);
-          generateTest(pathKey, key, jsonSchema);
+          requireTestGenerator.generateTest(pathKey, key, jsonSchema);
         }
       }
     });
@@ -30,9 +36,10 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
 };
 
 function _createTestConfig(url, apiObject) {
+  const utils = container.get<IUtils>(TYPES.IUtils);
   //need to fix url splitting
   const urlArray = url.split("/");
-  const rootUrl = urlArray.slice(0, urlArray.length - 1).join("/");
+  const rootUrl = urlArray.slice(0, 3).join("/");
   const baseUrls = apiObject.servers.map(server => {
     var absolutePattern = /^https?:\/\//i;
     if (absolutePattern.test(server.url)) {
@@ -46,7 +53,7 @@ function _createTestConfig(url, apiObject) {
     baseUrl: baseUrls[0]
   };
 
-  writeFileUtil(
+  utils.writeFileUtil(
     `./generated/node_modules/config/test-config.json`,
     JSON.stringify(testConfig, null, 2)
   );
