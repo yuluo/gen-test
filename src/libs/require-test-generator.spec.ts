@@ -49,8 +49,7 @@ describe("RequireTestGenerator", () => {
   });
 
   test("should run positive test template", () => {
-    const expectedCmd =
-      'hygen require-test new --endpoint /pet --operation post --name "negative-0 missing name" --datafile payload-2.json --codes failCodes';
+    const expectedCmd = `hygen require-test new --endpoint /pet --operation post --name "negative-0 missing name" --datafile payload-2.json --codes failCodes`;
 
     requireTestGenerator.generateTest("/pet", "post", petSchema);
     expect(execSpy).toHaveBeenCalledWith(expectedCmd);
