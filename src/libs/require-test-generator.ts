@@ -27,7 +27,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
 
     //generate positive test
     let template = this.payloadGenerator.generatePayloadTemplate(schema);
-    
+
     this.utils.writeFileUtil(
       `${targetDir}/payload-1.json`,
       JSON.stringify(template, null, 2)

@@ -10,5 +10,6 @@ module.exports = {
   },
   testMatch: ["**/*/*.spec.ts"],
   testEnvironment: "node",
-  setupFiles: ["./inversify.config.ts"]
+  setupFiles: ["./inversify.config.ts"],
+  collectCoverage: true
 };

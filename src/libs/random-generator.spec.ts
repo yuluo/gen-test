@@ -38,4 +38,8 @@ describe("RandomGenerator", () => {
     expect(randomNumber >= 2).toBe(true);
     expect(randomNumber < 10).toBe(true);
   });
+
+  test("should return a random string", () => {
+    expect(typeof randomGenerator.randomString()).toBe("string");
+  });
 });

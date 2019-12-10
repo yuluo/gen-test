@@ -1,5 +1,5 @@
 export interface IPayloadGenerator {
-  generatePayloadTemplate(schema: any): object;
+  generatePayloadTemplate(schema: any): any;
 }
 
 export interface IRandomGenerator {

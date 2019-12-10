@@ -3,15 +3,15 @@ import { TYPES } from "../types";
 import { IRandomGenerator, IPayloadGenerator } from "../interfaces";
 
 const typeTemplate = {
-  "integer": "randomInteger",
-  "number": "randomNumber",
-  "boolean": "randomBoolean",
-  "string": {
-    "byte": "randomByte",
-    "binary": "randomBinary",
+  integer: "randomInteger",
+  number: "randomNumber",
+  boolean: "randomBoolean",
+  string: {
+    byte: "randomByte",
+    binary: "randomBinary",
     "date-time": "randomDatetime",
-    "date": "randomDate",
-    "password": "randomString"
+    date: "randomDate",
+    password: "randomString"
   }
 };
 
@@ -21,7 +21,7 @@ export class PayloadGenerator implements IPayloadGenerator {
     @inject(TYPES.IRandomGenerator) private randomGenerator: IRandomGenerator
   ) {}
 
-  public generatePayloadTemplate(schema: any): object {
+  public generatePayloadTemplate(schema: any): any {
     if (schema.type === "array") {
       return this._processProperty("array", schema);
     } else {
