@@ -8,7 +8,6 @@ describe("PayloadGenerator", () => {
   let payloadGenerator: IPayloadGenerator;
 
   beforeEach(() => {
-    //let mockRandomGenerator: IRandomGenerator = mock(RandomGenerator);
     let mockRandomGenerator: IRandomGenerator = new RandomGenerator();
     payloadGenerator = new PayloadGenerator(mockRandomGenerator);
   });
