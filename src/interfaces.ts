@@ -1,6 +1,5 @@
 export interface IPayloadGenerator {
-  generatePayloadTemplate(properties: object): object;
-  processProperty(type: string, processProperty: object): any;
+  generatePayloadTemplate(schema: any): any;
 }
 
 export interface IRandomGenerator {
@@ -10,13 +9,13 @@ export interface IRandomGenerator {
   randomDatetime(): string;
   randomDate(): string;
   randomEnum(enums: string[]): string;
-  randomInteger(): number;
-  randomNumber(): number;
+  randomInteger(min, max): number;
+  randomNumber(min, max): number;
   randomString(): string;
 }
 
 export interface IRequireTestGenerator {
-    generateTest(endpoint: string, operation: string, schema: object): void
+    generateTest(endpoint: string, operation: string, schema: any): void
 }
 
 export interface IUtils {

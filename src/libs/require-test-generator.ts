@@ -15,7 +15,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     @inject(TYPES.IUtils) private utils: IUtils
   ) {}
 
-  public generateTest(endpoint: string, operation: string, schema: object) {
+  public generateTest(endpoint: string, operation: string, schema: any) {
     const hygen = `hygen`;
     const endpointParam = `--endpoint ${endpoint}`;
     const operationParam = `--operation ${operation}`;
@@ -26,14 +26,8 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     shell.exec(scaffoldingCmd);
 
     //generate positive test
-    let template = null;
-    if (schema.type === "array") {
-      template = this.payloadGenerator.processProperty("array", schema);
-    } else {
-      template = this.payloadGenerator.generatePayloadTemplate(
-        schema.properties
-      );
-    }
+    let template = this.payloadGenerator.generatePayloadTemplate(schema);
+
     this.utils.writeFileUtil(
       `${targetDir}/payload-1.json`,
       JSON.stringify(template, null, 2)
