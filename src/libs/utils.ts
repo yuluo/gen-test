@@ -11,4 +11,20 @@ export class Utils implements IUtils {
       }
     });
   }
+
+  public generateBaseUrls(url, servers): string[] {
+    const urlArray = url.split("/");
+    const rootUrl = urlArray.slice(0, 3).join("/");
+    const baseUrls = servers.map(server => {
+      var absolutePattern = /^https?:\/\//i;
+      if (absolutePattern.test(server.url)) {
+        return server.url;
+      } else {
+        return rootUrl + server.url;
+      }
+    });
+
+    return baseUrls
+  }
+  
 }
