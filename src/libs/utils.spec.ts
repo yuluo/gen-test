@@ -19,4 +19,32 @@ describe("Utils", () => {
 
     expect(writeFileSpy).toHaveBeenCalled();
   });
+
+  test("should construct base urls using relative path", () => {
+    const expectedBaseUrls = ["http://localhost:8080/v3"];
+    const url = "http://localhost:8080/swagger/openapi.json";
+    const servers = [
+      {
+        "url": "/v3"
+      }
+    ];
+    
+    const baseUrls = utils.generateBaseUrls(url, servers);
+    
+    expect(baseUrls).toEqual(expectedBaseUrls);
+  });
+
+  test("should construct base urls using absolute path", () => {
+    const expectedBaseUrls = ["http://localhost:8080/root"];
+    const url = "http://localhost:8080/openapi.json";
+    const servers = [
+      {
+        "url": "http://localhost:8080/root"
+      }
+    ];
+    
+    const baseUrls = utils.generateBaseUrls(url, servers);
+
+    expect(baseUrls).toEqual(expectedBaseUrls);
+  });
 });

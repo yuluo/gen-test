@@ -20,4 +20,5 @@ export interface IRequireTestGenerator {
 
 export interface IUtils {
     writeFileUtil(name: string, content: string): void;
+    generateBaseUrls(url: string, servers: any): string[];
 }
