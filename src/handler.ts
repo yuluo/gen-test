@@ -5,15 +5,17 @@ import { APIGatewayEvent, Handler } from "aws-lambda";
 import {IUtils, IRequireTestGenerator} from "./interfaces";
 import {container} from "../inversify.config";
 import { TYPES } from "./types";
+import { OpenAPIV3 } from "openapi-types";
 
 
 export const parseSpec: Handler = async (event: APIGatewayEvent) => {
   const requireTestGenerator = container.get<IRequireTestGenerator>(TYPES.IRequireTestGenerator);
   const utils = container.get<IUtils>(TYPES.IUtils);
 
-  const apiObject = await SwaggerParser.dereference(event);
+  const apiObject: OpenAPIV3.Document = await SwaggerParser.dereference(event);
   const paths = apiObject.paths;
   const baseUrls = utils.generateBaseUrls(event.toString(), apiObject.servers);
+  //const baseUrls = ["http://localhost:8080/"]
   const hygen = `hygen`; 
   const testConfigCmd = `${hygen} test-config new --baseurl ${baseUrls[0]}`;
 
@@ -23,7 +25,7 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
     const path = paths[pathKey];
     Object.keys(path).forEach(key => {
       if (key === "post") {
-        const jsonSchema = jsonpath.query(
+        const jsonSchema: OpenAPIV3.SchemaObject = jsonpath.query(
           path[key],
           "$['requestBody']['content']['application/json']['schema']"
         )[0];

@@ -6,6 +6,7 @@ import {
 } from "../interfaces";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
+import { OpenAPIV3 } from "openapi-types";
 
 @injectable()
 export class RequireTestGenerator implements IRequireTestGenerator {
@@ -15,7 +16,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     @inject(TYPES.IUtils) private utils: IUtils
   ) {}
 
-  public generateTest(endpoint: string, operation: string, schema: any) {
+  public generateTest(endpoint: string, operation: string, schema: OpenAPIV3.SchemaObject) {
     const hygen = `hygen`;
     const endpointParam = `--endpoint ${endpoint}`;
     const operationParam = `--operation ${operation}`;

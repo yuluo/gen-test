@@ -1,6 +1,7 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import { IRandomGenerator, IPayloadGenerator } from "../interfaces";
+import { OpenAPIV3 } from "openapi-types";
 
 const typeTemplate = {
   integer: "randomInteger",
@@ -21,36 +22,37 @@ export class PayloadGenerator implements IPayloadGenerator {
     @inject(TYPES.IRandomGenerator) private randomGenerator: IRandomGenerator
   ) {}
 
-  public generatePayloadTemplate(schema: any): any {
+  public generatePayloadTemplate(schema: OpenAPIV3.SchemaObject): any {
     if (schema.type === "array") {
-      return this._processProperty("array", schema);
+      return this._processProperty(schema);
     } else {
-      return this._processObject(schema.properties);
+      return this._processObject(schema as OpenAPIV3.NonArraySchemaObject);
     }
   }
 
   //TODO: add wrapper function
-  private _processObject(properties: object): object {
+  private _processObject(schema: OpenAPIV3.NonArraySchemaObject): object {
     let payloadTemplate = {};
-    Object.keys(properties).forEach(key => {
-      let type = properties[key].type;
-      payloadTemplate[key] = this._processProperty(type, properties[key]);
+    Object.keys(schema.properties).forEach(key => {
+      //let type = (schema.properties[key] as OpenAPIV3.SchemaObject).type;
+      payloadTemplate[key] = this._processProperty(schema.properties[key] as OpenAPIV3.SchemaObject);
     });
 
     return payloadTemplate;
   }
 
-  public _processProperty(type: string, property) {
-    if (type === "object") {
-      return this._processObject(property.properties);
-    } else if (type === "array") {
+  public _processProperty( schemaObject: OpenAPIV3.SchemaObject) {
+    if (schemaObject.type === "object") {
+      return this._processObject(schemaObject as OpenAPIV3.NonArraySchemaObject);
+    } else if (schemaObject.type === "array") {
       let array = [];
-      array.push(this._processProperty(property.items.type, property.items));
+      let arrayItems = (schemaObject as OpenAPIV3.ArraySchemaObject).items as OpenAPIV3.SchemaObject;
+      array.push(this._processProperty(arrayItems));
       return array;
-    } else if (type === "string") {
-      return this._generateStringTemplate(property);
+    } else if (schemaObject.type === "string") {
+      return this._generateStringTemplate(schemaObject);
     } else {
-      return this.randomGenerator[typeTemplate[type]].call(
+      return this.randomGenerator[typeTemplate[schemaObject.type]].call(
         this.randomGenerator
       );
     }
