@@ -23,7 +23,7 @@ export class PayloadGenerator implements IPayloadGenerator {
   ) {}
 
   public generatePayloadTemplate(schemaObject: OpenAPIV3.SchemaObject): any {
-    if (schemaObject.type === "object") {
+if (schemaObject.type === "object") {
       return this._processNonArraySchemaObject(schemaObject);
     } else if (schemaObject.type === "array") {
       return this._processArraySchemaObject(schemaObject);
@@ -48,7 +48,10 @@ export class PayloadGenerator implements IPayloadGenerator {
       if(!payloadTemplate[payloadIndex]) {
         payloadTemplate[payloadIndex] = [];
       }
-      payloadTemplate[payloadIndex].push(template[payloadIndex]);
+
+      Object.keys(payloadTemplate).forEach( index => {
+        payloadTemplate[index].push(template[payloadIndex]);      
+      })
     })
 
 
@@ -65,9 +68,11 @@ export class PayloadGenerator implements IPayloadGenerator {
         if (!payloadTemplate[payloadIndex]) {
           payloadTemplate[payloadIndex] = {...payloadTemplate.payload0};
         }
-        payloadTemplate[payloadIndex][key] = template[payloadIndex];
+
+        Object.keys(payloadTemplate).forEach( index => {
+          payloadTemplate[index][key] = template[payloadIndex];
+        })
       })
-      
     });
 
     return payloadTemplate;
@@ -92,4 +97,16 @@ export class PayloadGenerator implements IPayloadGenerator {
 
     return stringTemplate;
   }
+
+  /*
+  private _processOneOf(tempaltes) {
+    console.log("_processOneOf")
+    console.log(JSON.stringify(tempaltes))
+  }
+
+  private _processAllOf(tempaltes) {
+    console.log("_processAllOf")
+    console.log(JSON.stringify(tempaltes))
+  }
+  */
 }
