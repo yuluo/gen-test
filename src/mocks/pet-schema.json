@@ -61,7 +61,16 @@
                 },
                 "name":{ 
                    "type":"string"
-                }
+                },
+                "status":{ 
+                  "type":"string",
+                  "description":"pet status in the store",
+                  "enum":[ 
+                     "available",
+                     "pending",
+                     "sold"
+                  ]
+               }
              },
              "description":"A tag for a pet",
              "example":{ 
