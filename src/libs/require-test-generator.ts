@@ -6,6 +6,7 @@ import {
 } from "../interfaces";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
+import { OpenAPIV3 } from "openapi-types";
 
 @injectable()
 export class RequireTestGenerator implements IRequireTestGenerator {
@@ -15,11 +16,12 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     @inject(TYPES.IUtils) private utils: IUtils
   ) {}
 
-  public generateTest(endpoint: string, operation: string, schema: any) {
+  public generateTest(endpoint: string, operation: string, schema: OpenAPIV3.SchemaObject) {
     const hygen = `hygen`;
     const endpointParam = `--endpoint ${endpoint}`;
     const operationParam = `--operation ${operation}`;
     const targetDir = `./generated/${endpoint}/${operation}/require-test`;
+    let testCounter = 0;
 
     //scaffolding
     const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} --type require`;
@@ -28,19 +30,25 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     //generate positive test
     let template = this.payloadGenerator.generatePayloadTemplate(schema);
 
-    this.utils.writeFileUtil(
-      `${targetDir}/payload-1.json`,
-      JSON.stringify(template, null, 2)
-    );
-    const testCaseCmd = `${hygen} require-test new ${endpointParam} ${operationParam} --name positive --datafile payload-1.json --codes successCodes`;
-    shell.exec(testCaseCmd);
+    Object.keys(template).forEach( templateKey => {
+      const payloadIndex = `payload-${testCounter}`;
+      this.utils.writeFileUtil(
+        `${targetDir}/${payloadIndex}.json`,
+        JSON.stringify(template[templateKey], null, 2)
+      );
+      const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} --name positive --datafile ${payloadIndex}.json --codes successCodes`;
+      shell.exec(testCaseCmd);
+
+      testCounter++;
+    });
+
 
     //generate negative test for-loop
     if (schema.required) {
       schema.required.forEach((property, index) => {
-        const payloadFile = `payload-${index + 2}.json`;
+        const payloadFile = `payload-${testCounter}.json`;
         const testName = `"negative-${index} missing ${property}"`;
-        let payload = { ...template };
+        let payload = { ...template.payload0 };
         delete payload[property];
 
         //TODO: refactor to use hygon
@@ -48,8 +56,10 @@ export class RequireTestGenerator implements IRequireTestGenerator {
           `${targetDir}/${payloadFile}`,
           JSON.stringify(payload, null, 2)
         );
-        const testCaseCmd = `${hygen} require-test new ${endpointParam} ${operationParam} --name ${testName} --datafile ${payloadFile} --codes failCodes`;
+        const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} --name ${testName} --datafile ${payloadFile} --codes failCodes`;
         shell.exec(testCaseCmd);
+
+        testCounter++;
       });
     }
   }

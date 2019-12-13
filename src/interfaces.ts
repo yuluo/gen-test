@@ -1,5 +1,7 @@
+import { OpenAPIV3 } from "openapi-types";
+
 export interface IPayloadGenerator {
-  generatePayloadTemplate(schema: any): any;
+  generatePayloadTemplate(schema: OpenAPIV3.SchemaObject): any;
 }
 
 export interface IRandomGenerator {
@@ -15,7 +17,7 @@ export interface IRandomGenerator {
 }
 
 export interface IRequireTestGenerator {
-    generateTest(endpoint: string, operation: string, schema: any): void
+    generateTest(endpoint: string, operation: string, schema: OpenAPIV3.SchemaObject): void
 }
 
 export interface IUtils {
