@@ -30,40 +30,64 @@ export class PayloadGenerator implements IPayloadGenerator {
     } else if (schemaObject.type === "string") {
       return this._generateStringTemplate(schemaObject);
     } else {
-      return this.randomGenerator[typeTemplate[schemaObject.type]].call(
+      const template = this.randomGenerator[typeTemplate[schemaObject.type]].call(
         this.randomGenerator
       );
+      return {"payload0": template };
     }
   }
 
   private _processArraySchemaObject(schemaObject: OpenAPIV3.ArraySchemaObject) {
-    let array = [];
+    let payloadTemplate = {
+      "payload0": []
+    };
+
     let arrayItems = schemaObject.items as OpenAPIV3.SchemaObject;
-    array.push(this.generatePayloadTemplate(arrayItems));
-    return array;
+    const template = this.generatePayloadTemplate(arrayItems)
+    Object.keys(template).forEach(payloadIndex => {
+      if(!payloadTemplate[payloadIndex]) {
+        payloadTemplate[payloadIndex] = [];
+      }
+      payloadTemplate[payloadIndex].push(template[payloadIndex]);
+    })
+
+
+    return payloadTemplate;
   }
 
   private _processNonArraySchemaObject(schema: OpenAPIV3.NonArraySchemaObject) {
-    let payloadTemplate = {};
+    let payloadTemplate = {
+      "payload0": {}
+    };
     Object.keys(schema.properties).forEach(key => {
-      payloadTemplate[key] = this.generatePayloadTemplate(schema.properties[key] as OpenAPIV3.SchemaObject);
+      const template = this.generatePayloadTemplate(schema.properties[key] as OpenAPIV3.SchemaObject);
+      Object.keys(template).forEach(payloadIndex => {
+        if (!payloadTemplate[payloadIndex]) {
+          payloadTemplate[payloadIndex] = {...payloadTemplate.payload0};
+        }
+        payloadTemplate[payloadIndex][key] = template[payloadIndex];
+      })
+      
     });
 
     return payloadTemplate;
   }
 
-
-
   private _generateStringTemplate(stringProperty) {
-    let stringTemplate = "";
+    let stringTemplate = {
+      "payload0": ""
+    };
+
     if (stringProperty.enum) {
-      stringTemplate = this.randomGenerator.randomEnum(stringProperty.enum);
+      stringProperty.enum.forEach( (value, index) => {
+        stringTemplate[`payload${index}`] = value
+      })
     } else if (stringProperty.format) {
-      stringTemplate = this.randomGenerator[
+      stringTemplate.payload0 = this.randomGenerator[
         typeTemplate.string[stringProperty.format]
       ].call(null);
     } else {
-      stringTemplate = this.randomGenerator.randomString();
+      stringTemplate.payload0 = this.randomGenerator.randomString();
     }
 
     return stringTemplate;

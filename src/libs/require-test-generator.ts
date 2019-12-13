@@ -31,7 +31,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
 
     this.utils.writeFileUtil(
       `${targetDir}/payload-1.json`,
-      JSON.stringify(template, null, 2)
+      JSON.stringify(template.payload0, null, 2)
     );
     const testCaseCmd = `${hygen} require-test new ${endpointParam} ${operationParam} --name positive --datafile payload-1.json --codes successCodes`;
     shell.exec(testCaseCmd);
@@ -41,7 +41,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
       schema.required.forEach((property, index) => {
         const payloadFile = `payload-${index + 2}.json`;
         const testName = `"negative-${index} missing ${property}"`;
-        let payload = { ...template };
+        let payload = { ...template.payload0 };
         delete payload[property];
 
         //TODO: refactor to use hygon
