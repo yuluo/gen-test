@@ -21,6 +21,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     const endpointParam = `--endpoint ${endpoint}`;
     const operationParam = `--operation ${operation}`;
     const targetDir = `./generated/${endpoint}/${operation}/require-test`;
+    let testCounter = 0;
 
     //scaffolding
     const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} --type require`;
@@ -29,17 +30,23 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     //generate positive test
     let template = this.payloadGenerator.generatePayloadTemplate(schema);
 
-    this.utils.writeFileUtil(
-      `${targetDir}/payload-1.json`,
-      JSON.stringify(template.payload0, null, 2)
-    );
-    const testCaseCmd = `${hygen} require-test new ${endpointParam} ${operationParam} --name positive --datafile payload-1.json --codes successCodes`;
-    shell.exec(testCaseCmd);
+    Object.keys(template).forEach( templateKey => {
+      const payloadIndex = `payload-${testCounter}`;
+      this.utils.writeFileUtil(
+        `${targetDir}/${payloadIndex}.json`,
+        JSON.stringify(template[templateKey], null, 2)
+      );
+      const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} --name positive --datafile ${payloadIndex}.json --codes successCodes`;
+      shell.exec(testCaseCmd);
+
+      testCounter++;
+    });
+
 
     //generate negative test for-loop
     if (schema.required) {
       schema.required.forEach((property, index) => {
-        const payloadFile = `payload-${index + 2}.json`;
+        const payloadFile = `payload-${testCounter}.json`;
         const testName = `"negative-${index} missing ${property}"`;
         let payload = { ...template.payload0 };
         delete payload[property];
@@ -49,8 +56,10 @@ export class RequireTestGenerator implements IRequireTestGenerator {
           `${targetDir}/${payloadFile}`,
           JSON.stringify(payload, null, 2)
         );
-        const testCaseCmd = `${hygen} require-test new ${endpointParam} ${operationParam} --name ${testName} --datafile ${payloadFile} --codes failCodes`;
+        const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} --name ${testName} --datafile ${payloadFile} --codes failCodes`;
         shell.exec(testCaseCmd);
+
+        testCounter++;
       });
     }
   }
