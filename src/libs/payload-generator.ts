@@ -22,33 +22,11 @@ export class PayloadGenerator implements IPayloadGenerator {
     @inject(TYPES.IRandomGenerator) private randomGenerator: IRandomGenerator
   ) {}
 
-  public generatePayloadTemplate(schema: OpenAPIV3.SchemaObject): any {
-    if (schema.type === "array") {
-      return this._processProperty(schema);
-    } else {
-      return this._processObject(schema as OpenAPIV3.NonArraySchemaObject);
-    }
-  }
-
-  //TODO: add wrapper function
-  private _processObject(schema: OpenAPIV3.NonArraySchemaObject): object {
-    let payloadTemplate = {};
-    Object.keys(schema.properties).forEach(key => {
-      //let type = (schema.properties[key] as OpenAPIV3.SchemaObject).type;
-      payloadTemplate[key] = this._processProperty(schema.properties[key] as OpenAPIV3.SchemaObject);
-    });
-
-    return payloadTemplate;
-  }
-
-  public _processProperty( schemaObject: OpenAPIV3.SchemaObject) {
+  public generatePayloadTemplate(schemaObject: OpenAPIV3.SchemaObject): any {
     if (schemaObject.type === "object") {
-      return this._processObject(schemaObject as OpenAPIV3.NonArraySchemaObject);
+      return this._processNonArraySchemaObject(schemaObject);
     } else if (schemaObject.type === "array") {
-      let array = [];
-      let arrayItems = (schemaObject as OpenAPIV3.ArraySchemaObject).items as OpenAPIV3.SchemaObject;
-      array.push(this._processProperty(arrayItems));
-      return array;
+      return this._processArraySchemaObject(schemaObject);
     } else if (schemaObject.type === "string") {
       return this._generateStringTemplate(schemaObject);
     } else {
@@ -57,6 +35,24 @@ export class PayloadGenerator implements IPayloadGenerator {
       );
     }
   }
+
+  private _processArraySchemaObject(schemaObject: OpenAPIV3.ArraySchemaObject) {
+    let array = [];
+    let arrayItems = schemaObject.items as OpenAPIV3.SchemaObject;
+    array.push(this.generatePayloadTemplate(arrayItems));
+    return array;
+  }
+
+  private _processNonArraySchemaObject(schema: OpenAPIV3.NonArraySchemaObject) {
+    let payloadTemplate = {};
+    Object.keys(schema.properties).forEach(key => {
+      payloadTemplate[key] = this.generatePayloadTemplate(schema.properties[key] as OpenAPIV3.SchemaObject);
+    });
+
+    return payloadTemplate;
+  }
+
+
 
   private _generateStringTemplate(stringProperty) {
     let stringTemplate = "";
