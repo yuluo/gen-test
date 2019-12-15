@@ -6,7 +6,6 @@ import { OpenAPIV3 } from "openapi-types";
 const typeTemplate = {
   integer: "randomInteger",
   number: "randomNumber",
-  boolean: "randomBoolean",
   string: {
     byte: "randomByte",
     binary: "randomBinary",
@@ -23,12 +22,30 @@ export class PayloadGenerator implements IPayloadGenerator {
   ) {}
 
   public generatePayloadTemplate(schemaObject: OpenAPIV3.SchemaObject): any {
-if (schemaObject.type === "object") {
+    if (schemaObject.oneOf) {
+      console.log(JSON.stringify(schemaObject.oneOf))
+      const templates = schemaObject.oneOf.map( schema => {
+        return this.generatePayloadTemplate(schema as OpenAPIV3.SchemaObject);
+      });
+      this._processOneOf(templates);
+    } else if (schemaObject.allOf){
+      let templates = {};
+      schemaObject.allOf.forEach( (schema, index) => {
+        templates[`payload${index}`] = this.generatePayloadTemplate(schema as OpenAPIV3.SchemaObject);
+      })
+
+      return this._processAllOf(templates);
+    } else if (schemaObject.type === "object") {
       return this._processNonArraySchemaObject(schemaObject);
     } else if (schemaObject.type === "array") {
       return this._processArraySchemaObject(schemaObject);
     } else if (schemaObject.type === "string") {
       return this._generateStringTemplate(schemaObject);
+    } else if(schemaObject.type === "boolean") {
+      return {
+        "payload0": true,
+        "payload1": false
+      };
     } else {
       const template = this.randomGenerator[typeTemplate[schemaObject.type]].call(
         this.randomGenerator
@@ -44,16 +61,19 @@ if (schemaObject.type === "object") {
 
     let arrayItems = schemaObject.items as OpenAPIV3.SchemaObject;
     const template = this.generatePayloadTemplate(arrayItems)
-    Object.keys(template).forEach(payloadIndex => {
-      if(!payloadTemplate[payloadIndex]) {
-        payloadTemplate[payloadIndex] = [];
-      }
 
+    if (Object.keys(template).length === 1) {
       Object.keys(payloadTemplate).forEach( index => {
-        payloadTemplate[index].push(template[payloadIndex]);      
+        payloadTemplate[index].push(template.payload0);      
       })
-    })
-
+    } else {
+      Object.keys(template).forEach(payloadIndex => {
+        if(!payloadTemplate[payloadIndex]) {
+          payloadTemplate[payloadIndex] = [];
+        }
+        payloadTemplate[payloadIndex].push(template[payloadIndex]);
+      })
+    }
 
     return payloadTemplate;
   }
@@ -64,15 +84,20 @@ if (schemaObject.type === "object") {
     };
     Object.keys(schema.properties).forEach(key => {
       const template = this.generatePayloadTemplate(schema.properties[key] as OpenAPIV3.SchemaObject);
-      Object.keys(template).forEach(payloadIndex => {
-        if (!payloadTemplate[payloadIndex]) {
-          payloadTemplate[payloadIndex] = {...payloadTemplate.payload0};
-        }
-
+      if (Object.keys(template).length === 1) {
         Object.keys(payloadTemplate).forEach( index => {
-          payloadTemplate[index][key] = template[payloadIndex];
+          payloadTemplate[index][key] = template.payload0;
         })
-      })
+      } else {
+        Object.keys(template).forEach(payloadIndex => {
+          if (!payloadTemplate[payloadIndex]) {
+            payloadTemplate[payloadIndex] = {...payloadTemplate.payload0};
+          }
+          payloadTemplate[payloadIndex][key] = template[payloadIndex];
+        })
+      }
+      
+
     });
 
     return payloadTemplate;
@@ -98,15 +123,40 @@ if (schemaObject.type === "object") {
     return stringTemplate;
   }
 
-  /*
-  private _processOneOf(tempaltes) {
+  
+  private _processOneOf(templates) {
     console.log("_processOneOf")
-    console.log(JSON.stringify(tempaltes))
   }
 
-  private _processAllOf(tempaltes) {
+  private _processAllOf(templates) {
     console.log("_processAllOf")
-    console.log(JSON.stringify(tempaltes))
+    let templateResult = {
+      "payload0": {}
+    };
+
+    Object.keys(templates).forEach( templateKey => {
+      const template = templates[templateKey];
+      const max = Math.max(Object.keys(templateResult).length, Object.keys(template).length);
+
+      for(let i = 0; i < max; i++) {
+        let templateIndex = `payload${i}`;
+
+        if(!templateResult[templateIndex]) {
+          templateResult[templateIndex] = {...templateResult.payload0};
+        }
+
+        if (!template[templateIndex]) {
+          templateIndex = "payload0";
+        }
+
+        templateResult[`payload${i}`] =  {
+          ...templateResult[`payload${i}`],
+          ...template[templateIndex]
+        };
+      }
+    })
+
+    return templateResult;
   }
-  */
+  
 }
