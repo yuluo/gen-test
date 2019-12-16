@@ -20,6 +20,7 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
   const testConfigCmd = `${hygen} test-config new --baseurl ${baseUrls[0]}`;
 
   shell.exec(testConfigCmd);
+  utils.setApiDocument(apiObject);
 
   Object.keys(paths).forEach(pathKey => {
     const path = paths[pathKey];
@@ -31,9 +32,11 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
         )[0];
         console.log(`${key} ${pathKey}`);
         if (jsonSchema) {
-          //console.log(JSON.stringify(jsonSchema, null, 2));
-          //let template = _generatePayloadTemplate(jsonSchema.properties);
-          requireTestGenerator.generateTest(pathKey, key, jsonSchema);
+          try {
+            requireTestGenerator.generateTest(pathKey, key, jsonSchema);
+          } catch (error) {
+            console.error(error);
+          }
         }
       }
     });

@@ -1,6 +1,10 @@
 import { Utils } from "./utils";
 import { IUtils } from "../interfaces";
 import * as fs from "fs";
+import * as petApiDocument from "../mocks/openapi-pet.json";
+import * as petSchema from "../mocks/openapi-pet-petschema.json";
+import { OpenAPIV3 } from "openapi-types";
+
 
 describe("Utils", () => {
   let utils: IUtils;
@@ -9,6 +13,7 @@ describe("Utils", () => {
   beforeEach(() => {
     utils = new Utils();
     writeFileSpy = spyOn(fs, "writeFile");
+    utils.setApiDocument(petApiDocument as OpenAPIV3.Document);
   });
 
   test("should call writeFile", () => {
@@ -47,4 +52,17 @@ describe("Utils", () => {
 
     expect(baseUrls).toEqual(expectedBaseUrls);
   });
+
+  test("should retrieve schemaObject using schemaName", () => {
+    const schemObejct = utils.getSchemaObject("Pet");
+
+    expect(schemObejct).toEqual(petSchema);
+  });
+
+  test("should retrieve schemaObject using ref name", () => {
+    const schemObejct = utils.getSchemaObject("#/components/schemas/Pet");
+
+    expect(schemObejct).toEqual(petSchema);
+  });
+
 });

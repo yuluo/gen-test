@@ -23,4 +23,6 @@ export interface IRequireTestGenerator {
 export interface IUtils {
     writeFileUtil(name: string, content: string): void;
     generateBaseUrls(url: string, servers: any): string[];
+    setApiDocument(apiDocument: OpenAPIV3.Document): void;
+    getSchemaObject(schemaName: string): OpenAPIV3.SchemaObject;
 }

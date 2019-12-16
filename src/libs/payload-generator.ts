@@ -1,7 +1,8 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
-import { IRandomGenerator, IPayloadGenerator } from "../interfaces";
+import { IRandomGenerator, IPayloadGenerator, IUtils } from "../interfaces";
 import { OpenAPIV3 } from "openapi-types";
+import * as jsonpath from "jsonpath";
 
 const typeTemplate = {
   integer: "randomInteger",
@@ -18,16 +19,13 @@ const typeTemplate = {
 @injectable()
 export class PayloadGenerator implements IPayloadGenerator {
   public constructor(
-    @inject(TYPES.IRandomGenerator) private randomGenerator: IRandomGenerator
+    @inject(TYPES.IRandomGenerator) private randomGenerator: IRandomGenerator,
+    @inject(TYPES.IUtils) private utils: IUtils
   ) {}
 
   public generatePayloadTemplate(schemaObject: OpenAPIV3.SchemaObject): any {
     if (schemaObject.oneOf) {
-      console.log(JSON.stringify(schemaObject.oneOf))
-      const templates = schemaObject.oneOf.map( schema => {
-        return this.generatePayloadTemplate(schema as OpenAPIV3.SchemaObject);
-      });
-      this._processOneOf(templates);
+      return this._processOneOf(schemaObject);;
     } else if (schemaObject.allOf){
       let templates = {};
       schemaObject.allOf.forEach( (schema, index) => {
@@ -96,8 +94,6 @@ export class PayloadGenerator implements IPayloadGenerator {
           payloadTemplate[payloadIndex][key] = template[payloadIndex];
         })
       }
-      
-
     });
 
     return payloadTemplate;
@@ -124,12 +120,35 @@ export class PayloadGenerator implements IPayloadGenerator {
   }
 
   
-  private _processOneOf(templates) {
-    console.log("_processOneOf")
+  private _processOneOf(schemaObject: OpenAPIV3.SchemaObject) {
+    let templateResult = {};
+    let testCounter = 0;
+    const discriminator: OpenAPIV3.SchemaObject = jsonpath.query(schemaObject.oneOf, `$..${schemaObject.discriminator.propertyName}`)[0];
+    const discriminatorPayload = this.generatePayloadTemplate(discriminator);
+
+    Object.values(discriminatorPayload).forEach(value => {
+      let schemaName = value.toString();
+      if(schemaObject.discriminator.mapping &&
+        schemaObject.discriminator.mapping[value.toString()]) {
+          schemaName = schemaObject.discriminator.mapping[value.toString()];
+      }
+      let mappingObject = this.utils.getSchemaObject(schemaName);
+      if(!mappingObject) {
+        throw new Error(`Cannot find schema for ${value}`)
+      }
+      let template = this.generatePayloadTemplate(mappingObject);
+      
+      template.payload0[schemaObject.discriminator.propertyName] = value;
+      //console.log(JSON.stringify(template))
+      templateResult[`payload${testCounter}`] = template.payload0;
+
+      testCounter++;
+    })
+
+    return templateResult;
   }
 
   private _processAllOf(templates) {
-    console.log("_processAllOf")
     let templateResult = {
       "payload0": {}
     };

@@ -2677,7 +2677,7 @@
         "discriminator": {
           "propertyName": "programId",
           "mapping": {
-            "real_appeal": "#/RealAppealPartialQualification"
+            "real_appeal": "#/components/schemas/RealAppealPartialQualification"
           }
         },
         "oneOf": [
@@ -3070,7 +3070,24 @@
       },
       "CreateMemberRequest": {
         "discriminator": {
-          "propertyName": "programId"
+          "propertyName": "programId",
+          "mapping": {
+            "real_appeal": "#/components/schemas/CreateRealAppealMemberRequest",
+            "eat_smart": "#/components/schemas/CreateDwcMemberRequest",
+            "fit_for_life": "#/components/schemas/CreateDwcMemberRequest",
+            "quit_tobacco": "#/components/schemas/CreateDwcMemberRequest",
+            "diabetes_lifestyle": "#/components/schemas/CreateDwcMemberRequest",
+            "meditation": "#/components/schemas/CreateDwcMemberRequest",
+            "happiness": "#/components/schemas/CreateDwcMemberRequest",
+            "general_wellness": "#/components/schemas/CreateDwcMemberRequest",
+            "family_wellness": "#/components/schemas/CreateDwcMemberRequest",
+            "healthy_heart": "#/components/schemas/CreateDwcMemberRequest",
+            "sleep_well": "#/components/schemas/CreateDwcMemberRequest",
+            "stress_less": "#/components/schemas/CreateDwcMemberRequest",
+            "financial_wellbeing": "#/components/schemas/CreateDwcMemberRequest",
+            "weight_and_wellness": "#/components/schemas/CreateDwcMemberRequest",
+            "living_with_diabetes": "#/components/schemas/CreateDwcMemberRequest"
+          }
         },
         "oneOf": [
           {
