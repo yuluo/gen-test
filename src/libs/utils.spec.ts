@@ -5,7 +5,6 @@ import * as petApiDocument from "../mocks/openapi-pet.json";
 import * as petSchema from "../mocks/openapi-pet-petschema.json";
 import { OpenAPIV3 } from "openapi-types";
 
-
 describe("Utils", () => {
   let utils: IUtils;
   let writeFileSpy;
@@ -30,12 +29,12 @@ describe("Utils", () => {
     const url = "http://localhost:8080/swagger/openapi.json";
     const servers = [
       {
-        "url": "/v3"
+        url: "/v3"
       }
     ];
-    
+
     const baseUrls = utils.generateBaseUrls(url, servers);
-    
+
     expect(baseUrls).toEqual(expectedBaseUrls);
   });
 
@@ -44,10 +43,10 @@ describe("Utils", () => {
     const url = "http://localhost:8080/openapi.json";
     const servers = [
       {
-        "url": "http://localhost:8080/root"
+        url: "http://localhost:8080/root"
       }
     ];
-    
+
     const baseUrls = utils.generateBaseUrls(url, servers);
 
     expect(baseUrls).toEqual(expectedBaseUrls);
@@ -64,5 +63,4 @@ describe("Utils", () => {
 
     expect(schemObejct).toEqual(petSchema);
   });
-
 });
