@@ -131,7 +131,7 @@ export class PayloadGenerator implements IPayloadGenerator {
       `$..${schemaObject.discriminator.propertyName}`
     )[0];
     const discriminatorPayload = this.generatePayloadTemplate(discriminator);
-      
+
     Object.values(discriminatorPayload).forEach(value => {
       let schemaName = value.toString();
       if (
@@ -157,7 +157,6 @@ export class PayloadGenerator implements IPayloadGenerator {
   }
 
   private _processAllOf(templates) {
-    console.log("_processAllof");
     let templateResult = {
       payload0: {}
     };

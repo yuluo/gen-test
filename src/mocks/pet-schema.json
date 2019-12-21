@@ -10,6 +10,9 @@
           "type":"integer",
           "format":"int64"
        },
+       "inShelter": {
+         "type":"boolean"
+       },
        "category":{ 
           "title":"Pet category",
           "type":"object",

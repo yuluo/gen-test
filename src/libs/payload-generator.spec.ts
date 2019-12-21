@@ -11,24 +11,19 @@ describe("PayloadGenerator", () => {
   let payloadGenerator: IPayloadGenerator;
 
   // cannot move to json file, will cause type check fail
-  const baseSchema = { 
-    "type":"object",
-    "required":[ 
-       "petType"
-    ],
-    "properties":{ 
-       "petType":{ 
-          "type":"string",
-          "enum":[ 
-             "cat",
-             "dog"
-          ]
-       }
+  const baseSchema = {
+    type: "object",
+    required: ["petType"],
+    properties: {
+      petType: {
+        type: "string",
+        enum: ["cat", "dog"]
+      }
     }
- } as OpenAPIV3.SchemaObject;
+  } as OpenAPIV3.SchemaObject;
 
   const catSchema = {
-    "allOf": [
+    allOf: [
       baseSchema,
       {
         type: "object",
@@ -42,7 +37,7 @@ describe("PayloadGenerator", () => {
   } as OpenAPIV3.SchemaObject;
 
   const dogSchema = {
-    "allOf": [
+    allOf: [
       baseSchema,
       {
         type: "object",
@@ -65,17 +60,16 @@ describe("PayloadGenerator", () => {
       discriminator: {
         propertyName: "petType"
       },
-      oneOf: [
-        catSchema,
-        dogSchema
-      ]
+      oneOf: [catSchema, dogSchema]
     } as OpenAPIV3.SchemaObject;
 
     when(mockUtils.getSchemaObject("cat")).thenReturn(catSchema);
     when(mockUtils.getSchemaObject("dog")).thenReturn(dogSchema);
-    
-    payloadGenerator = new PayloadGenerator(mockRandomGenerator, instance(mockUtils));
-  
+
+    payloadGenerator = new PayloadGenerator(
+      mockRandomGenerator,
+      instance(mockUtils)
+    );
   });
 
   test("should create template based on type", () => {
@@ -94,6 +88,25 @@ describe("PayloadGenerator", () => {
     expect(typeof template.payload0.status).toBe("string");
   });
 
+  test("should create payload to cover all possible boolean value", () => {
+    const template = payloadGenerator.generatePayloadTemplate(
+      petSchema as OpenAPIV3.SchemaObject
+    );
+
+    expect(template.payload0.inShelter).toBe(true);
+    expect(template.payload1.inShelter).toBe(false);
+  });
+
+  test("should create payload to cover all possible enum value", () => {
+    const template = payloadGenerator.generatePayloadTemplate(
+      petSchema as OpenAPIV3.SchemaObject
+    );
+
+    expect(template.payload0.status).toBe("available");
+    expect(template.payload1.status).toBe("pending");
+    expect(template.payload2.status).toBe("sold");
+  });
+
   test("should create template array data", () => {
     const template = payloadGenerator.generatePayloadTemplate(
       userArraySchema as OpenAPIV3.SchemaObject
@@ -107,7 +120,7 @@ describe("PayloadGenerator", () => {
 
   test("should process allOf", () => {
     const template = payloadGenerator.generatePayloadTemplate(createPetSchema);
-    
+
     expect(typeof template.payload0.pur).toBe("string");
     expect(template.payload0.petType).toBe("cat");
     expect(typeof template.payload1.bark).toBe("string");
@@ -120,10 +133,22 @@ describe("PayloadGenerator", () => {
       cat: "cat"
     };
     const template = payloadGenerator.generatePayloadTemplate(createPetSchema);
-    
+
     expect(typeof template.payload0.pur).toBe("string");
     expect(template.payload0.petType).toBe("cat");
     expect(typeof template.payload1.bark).toBe("string");
     expect(template.payload1.petType).toBe("dog");
+  });
+
+  test("should throww error if can't find schema", () => {
+    const expectedError = "Cannot find schema for dog";
+
+    createPetSchema.discriminator.mapping = {
+      dog: "DOG"
+    };
+
+    expect(() => {
+      payloadGenerator.generatePayloadTemplate(createPetSchema);
+    }).toThrowError(expectedError);
   });
 });
