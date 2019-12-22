@@ -17,10 +17,16 @@ export interface IRandomGenerator {
 }
 
 export interface IRequireTestGenerator {
-    generateTest(endpoint: string, operation: string, schema: OpenAPIV3.SchemaObject): void
+  generateTest(
+    endpoint: string,
+    operation: string,
+    schema: OpenAPIV3.SchemaObject
+  ): void;
 }
 
 export interface IUtils {
-    writeFileUtil(name: string, content: string): void;
-    generateBaseUrls(url: string, servers: any): string[];
+  writeFileUtil(name: string, content: string): void;
+  generateBaseUrls(url: string, servers: any): string[];
+  setApiDocument(apiDocument: OpenAPIV3.Document): void;
+  getSchemaObject(schemaName: string): OpenAPIV3.SchemaObject;
 }

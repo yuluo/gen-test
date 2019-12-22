@@ -7,7 +7,7 @@ import { Utils } from "./src/libs/utils";
 import { PayloadGenerator } from "./src/libs/payload-generator";
 import { RequireTestGenerator } from "./src/libs/require-test-generator";
  
-const container = new Container();
+const container = new Container({defaultScope: "Singleton"});
 container.bind<IPayloadGenerator>(TYPES.IPayloadGenerator).to(PayloadGenerator);
 container.bind<IRandomGenerator>(TYPES.IRandomGenerator).to(RandomGenerator);
 container.bind<IRequireTestGenerator>(TYPES.IRequireTestGenerator).to(RequireTestGenerator);

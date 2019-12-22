@@ -7,9 +7,6 @@
       "type": "integer",
       "format": "int64"
     },
-    "inShelter": {
-      "type": "boolean"
-    },
     "category": {
       "title": "Pet category",
       "type": "object",
@@ -61,11 +58,6 @@
           },
           "name": {
             "type": "string"
-          },
-          "status": {
-            "type": "string",
-            "description": "pet status in the store",
-            "enum": ["available", "pending", "sold"]
           }
         },
         "description": "A tag for a pet",

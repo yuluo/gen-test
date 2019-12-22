@@ -23,11 +23,9 @@ describe("RequireTestGenerator", () => {
     mockPayloadGenerator = mock(PayloadGenerator);
     mockUtils = mock(Utils);
 
-    when(mockPayloadGenerator.generatePayloadTemplate(anything())).thenReturn(
-      {
-        "payload0": petTemplate
-      }
-    );
+    when(mockPayloadGenerator.generatePayloadTemplate(anything())).thenReturn({
+      payload0: petTemplate
+    });
 
     requireTestGenerator = new RequireTestGenerator(
       instance(mockPayloadGenerator),
@@ -39,7 +37,11 @@ describe("RequireTestGenerator", () => {
     const expectedCmd =
       "hygen scaffold new --endpoint /pet --operation post --type require";
 
-    requireTestGenerator.generateTest("/pet", "post", petSchema as OpenAPIV3.SchemaObject);
+    requireTestGenerator.generateTest(
+      "/pet",
+      "post",
+      petSchema as OpenAPIV3.SchemaObject
+    );
     expect(execSpy).toHaveBeenCalledWith(expectedCmd);
   });
 
@@ -47,14 +49,22 @@ describe("RequireTestGenerator", () => {
     const expectedCmd =
       "hygen test-case new --endpoint /pet --operation post --name positive --datafile payload-0.json --codes successCodes";
 
-    requireTestGenerator.generateTest("/pet", "post", petSchema as OpenAPIV3.SchemaObject);
+    requireTestGenerator.generateTest(
+      "/pet",
+      "post",
+      petSchema as OpenAPIV3.SchemaObject
+    );
     expect(execSpy).toHaveBeenCalledWith(expectedCmd);
   });
 
   test("should run positive test template", () => {
     const expectedCmd = `hygen test-case new --endpoint /pet --operation post --name "negative-0 missing name" --datafile payload-1.json --codes failCodes`;
 
-    requireTestGenerator.generateTest("/pet", "post", petSchema as OpenAPIV3.SchemaObject);
+    requireTestGenerator.generateTest(
+      "/pet",
+      "post",
+      petSchema as OpenAPIV3.SchemaObject
+    );
     expect(execSpy).toHaveBeenCalledWith(expectedCmd);
   });
 
@@ -62,7 +72,11 @@ describe("RequireTestGenerator", () => {
     const expectedPath = "./generated//pet/post/require-test/payload-0.json";
     const expectedPayloadString = JSON.stringify(petTemplate, null, 2);
 
-    requireTestGenerator.generateTest("/pet", "post", petSchema as OpenAPIV3.SchemaObject);
+    requireTestGenerator.generateTest(
+      "/pet",
+      "post",
+      petSchema as OpenAPIV3.SchemaObject
+    );
 
     verify(
       mockUtils.writeFileUtil(expectedPath, expectedPayloadString)

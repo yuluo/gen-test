@@ -16,7 +16,11 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     @inject(TYPES.IUtils) private utils: IUtils
   ) {}
 
-  public generateTest(endpoint: string, operation: string, schema: OpenAPIV3.SchemaObject) {
+  public generateTest(
+    endpoint: string,
+    operation: string,
+    schema: OpenAPIV3.SchemaObject
+  ) {
     const hygen = `hygen`;
     const endpointParam = `--endpoint ${endpoint}`;
     const operationParam = `--operation ${operation}`;
@@ -30,7 +34,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     //generate positive test
     let template = this.payloadGenerator.generatePayloadTemplate(schema);
 
-    Object.keys(template).forEach( templateKey => {
+    Object.keys(template).forEach(templateKey => {
       const payloadIndex = `payload-${testCounter}`;
       this.utils.writeFileUtil(
         `${targetDir}/${payloadIndex}.json`,
@@ -41,7 +45,6 @@ export class RequireTestGenerator implements IRequireTestGenerator {
 
       testCounter++;
     });
-
 
     //generate negative test for-loop
     if (schema.required) {
