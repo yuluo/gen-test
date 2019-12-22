@@ -1,50 +1,50 @@
-{ 
-    "type":"array",
-    "items":{ 
-       "title":"a User",
-       "type":"object",
-       "properties":{ 
-          "id":{ 
-             "type":"string",
-             "format":"byte"
-          },
-          "username":{ 
-             "type":"string"
-          },
-          "firstName":{ 
-             "type":"string"
-          },
-          "lastName":{ 
-             "type":"string"
-          },
-          "email":{ 
-             "type":"string"
-          },
-          "password":{ 
-             "type":"string"
-          },
-          "phone":{ 
-             "type":"number"
-          },
-          "userStatus":{ 
-             "type":"integer",
-             "description":"User Status",
-             "format":"int32"
-          }
-       },
-       "description":"A User who is purchasing from the pet store",
-       "example":{ 
-          "firstName":"firstName",
-          "lastName":"lastName",
-          "password":"password",
-          "userStatus":6,
-          "phone":"phone",
-          "id":0,
-          "email":"email",
-          "username":"username"
-       },
-       "xml":{ 
-          "name":"User"
-       }
+{
+  "type": "array",
+  "items": {
+    "title": "a User",
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "byte"
+      },
+      "username": {
+        "type": "string"
+      },
+      "firstName": {
+        "type": "string"
+      },
+      "lastName": {
+        "type": "string"
+      },
+      "email": {
+        "type": "string"
+      },
+      "password": {
+        "type": "string"
+      },
+      "phone": {
+        "type": "number"
+      },
+      "userStatus": {
+        "type": "integer",
+        "description": "User Status",
+        "format": "int32"
+      }
+    },
+    "description": "A User who is purchasing from the pet store",
+    "example": {
+      "firstName": "firstName",
+      "lastName": "lastName",
+      "password": "password",
+      "userStatus": 6,
+      "phone": "phone",
+      "id": 0,
+      "email": "email",
+      "username": "username"
+    },
+    "xml": {
+      "name": "User"
     }
- }
+  }
+}
