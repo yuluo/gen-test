@@ -11,8 +11,8 @@ export interface IRandomGenerator {
   randomDatetime(): string;
   randomDate(): string;
   randomEnum(enums: string[]): string;
-  randomInteger(min, max): number;
-  randomNumber(min, max): number;
+  randomInteger(min?: number, max?: number): number;
+  randomNumber(min?: number, max?: number): number;
   randomString(): string;
 }
 
@@ -20,7 +20,8 @@ export interface IRequireTestGenerator {
   generateTest(
     endpoint: string,
     operation: string,
-    schema: OpenAPIV3.SchemaObject
+    schema: OpenAPIV3.SchemaObject,
+    mediaType?: string
   ): void;
 }
 

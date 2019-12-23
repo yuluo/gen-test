@@ -7,6 +7,7 @@ const globalSetup = require("test-libs/jest.global-setup");
 const utils = require("test-libs/test-utils");
 const testConfig = require("config/test-config.json");
 const request = require("request");
+const queryString = require('query-string');
 
 describe("<%= operation %> <%= endpoint %> <%= type %> test", () => {
   let token = "";
@@ -25,7 +26,7 @@ describe("<%= operation %> <%= endpoint %> <%= type %> test", () => {
         bearer: token
       },
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "<%= mediatype %>"
       },
       json: true
     };

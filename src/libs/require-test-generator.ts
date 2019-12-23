@@ -19,16 +19,18 @@ export class RequireTestGenerator implements IRequireTestGenerator {
   public generateTest(
     endpoint: string,
     operation: string,
-    schema: OpenAPIV3.SchemaObject
+    schema: OpenAPIV3.SchemaObject,
+    mediaType = "application/json"
   ) {
     const hygen = `hygen`;
     const endpointParam = `--endpoint ${endpoint}`;
     const operationParam = `--operation ${operation}`;
+    const mediaTypeParam = `--mediatype ${mediaType}`;
     const targetDir = `./generated/${endpoint}/${operation}/require-test`;
     let testCounter = 0;
 
     //scaffolding
-    const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} --type require`;
+    const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} ${mediaTypeParam} --type require`;
     shell.exec(scaffoldingCmd);
 
     //generate positive test
@@ -40,7 +42,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
         `${targetDir}/${payloadIndex}.json`,
         JSON.stringify(template[templateKey], null, 2)
       );
-      const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} --name positive --datafile ${payloadIndex}.json --codes successCodes`;
+      const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive --datafile ${payloadIndex}.json --codes successCodes`;
       shell.exec(testCaseCmd);
 
       testCounter++;
@@ -59,7 +61,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
           `${targetDir}/${payloadFile}`,
           JSON.stringify(payload, null, 2)
         );
-        const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} --name ${testName} --datafile ${payloadFile} --codes failCodes`;
+        const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name ${testName} --datafile ${payloadFile} --codes failCodes`;
         shell.exec(testCaseCmd);
 
         testCounter++;
