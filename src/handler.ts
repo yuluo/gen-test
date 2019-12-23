@@ -34,9 +34,15 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
         console.log(`${key} ${pathKey}`);
         if (jsonSchema) {
           try {
-            const requestBody: OpenAPIV3.RequestBodyObject =path[key].requestBody as OpenAPIV3.RequestBodyObject;
+            const requestBody: OpenAPIV3.RequestBodyObject = path[key]
+              .requestBody as OpenAPIV3.RequestBodyObject;
             const mediaType = Object.keys(requestBody.content)[0];
-            requireTestGenerator.generateTest(pathKey, key, jsonSchema, mediaType);
+            requireTestGenerator.generateTest(
+              pathKey,
+              key,
+              jsonSchema,
+              mediaType
+            );
           } catch (error) {
             console.error(error);
           }
