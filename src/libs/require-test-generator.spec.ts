@@ -35,30 +35,32 @@ describe("RequireTestGenerator", () => {
 
   test("should run scaffold template", () => {
     const expectedCmd =
-      "hygen scaffold new --endpoint /pet --operation post --type require";
+      "hygen scaffold new --endpoint /pet --operation post --mediatype application/json --type require";
 
     requireTestGenerator.generateTest(
       "/pet",
       "post",
-      petSchema as OpenAPIV3.SchemaObject
+      petSchema as OpenAPIV3.SchemaObject,
+      "application/json"
     );
     expect(execSpy).toHaveBeenCalledWith(expectedCmd);
   });
 
   test("should run positive test template", () => {
     const expectedCmd =
-      "hygen test-case new --endpoint /pet --operation post --name positive --datafile payload-0.json --codes successCodes";
+      "hygen test-case new --endpoint /pet --operation post --mediatype application/json --name positive --datafile payload-0.json --codes successCodes";
 
     requireTestGenerator.generateTest(
       "/pet",
       "post",
-      petSchema as OpenAPIV3.SchemaObject
+      petSchema as OpenAPIV3.SchemaObject,
+      "application/json"
     );
     expect(execSpy).toHaveBeenCalledWith(expectedCmd);
   });
 
   test("should run positive test template", () => {
-    const expectedCmd = `hygen test-case new --endpoint /pet --operation post --name "negative-0 missing name" --datafile payload-1.json --codes failCodes`;
+    const expectedCmd = `hygen test-case new --endpoint /pet --operation post --mediatype application/json --name "negative-0 missing name" --datafile payload-1.json --codes failCodes`;
 
     requireTestGenerator.generateTest(
       "/pet",
@@ -75,7 +77,8 @@ describe("RequireTestGenerator", () => {
     requireTestGenerator.generateTest(
       "/pet",
       "post",
-      petSchema as OpenAPIV3.SchemaObject
+      petSchema as OpenAPIV3.SchemaObject,
+      "application/json"
     );
 
     verify(
