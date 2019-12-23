@@ -7,6 +7,7 @@ import {
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import { OpenAPIV3 } from "openapi-types";
+import * as jsonpath from "jsonpath";
 
 @injectable()
 export class RequireTestGenerator implements IRequireTestGenerator {
@@ -48,9 +49,18 @@ export class RequireTestGenerator implements IRequireTestGenerator {
       testCounter++;
     });
 
+    let requiredSet = new Set();
+    const requiredAttributes = jsonpath.query(schema, "$..required");
+
+    requiredAttributes.forEach(requiredAttribute => {
+      requiredAttribute.forEach(attribute => {
+        requiredSet.add(attribute);
+      });
+    });
+
     //generate negative test for-loop
-    if (schema.required) {
-      schema.required.forEach((property, index) => {
+    Array.from(requiredSet.values()).forEach(
+      (property: string, index: number) => {
         const payloadFile = `payload-${testCounter}.json`;
         const testName = `"negative-${index} missing ${property}"`;
         let payload = { ...template.payload0 };
@@ -65,7 +75,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
         shell.exec(testCaseCmd);
 
         testCounter++;
-      });
-    }
+      }
+    );
   }
 }
