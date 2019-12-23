@@ -20,7 +20,8 @@ export interface IRequireTestGenerator {
   generateTest(
     endpoint: string,
     operation: string,
-    schema: OpenAPIV3.SchemaObject
+    schema: OpenAPIV3.SchemaObject,
+    mediaType: string
   ): void;
 }
 
