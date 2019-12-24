@@ -13,15 +13,18 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
   );
   const utils = container.get<IUtils>(TYPES.IUtils);
 
-  const apiObject: OpenAPIV3.Document = await SwaggerParser.dereference(event);
+  const apiObject: OpenAPIV3.Document = await SwaggerParser.dereference(event.specUrl);
   const paths = apiObject.paths;
-  const baseUrls = utils.generateBaseUrls(event.toString(), apiObject.servers);
+  const baseUrls = utils.generateBaseUrls(event.specUrl.toString(), apiObject.servers);
   //const baseUrls = ["http://localhost:8080/"]
   const hygen = `hygen`;
   const testConfigCmd = `${hygen} test-config new --baseurl ${baseUrls[0]}`;
 
   shell.exec(testConfigCmd);
   utils.setApiDocument(apiObject);
+  utils.writeFileUtil(
+    "./generated/node_modules/config/pre-config-data.json",
+    JSON.stringify(event.preConfigData, null, 2));
 
   Object.keys(paths).forEach(pathKey => {
     const path = paths[pathKey];

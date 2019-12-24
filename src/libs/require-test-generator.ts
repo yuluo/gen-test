@@ -43,7 +43,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
         `${targetDir}/${payloadIndex}.json`,
         JSON.stringify(template[templateKey], null, 2)
       );
-      const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive --datafile ${payloadIndex}.json --codes successCodes`;
+      const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive-${testCounter} --datafile ${payloadIndex}.json --codes successCodes`;
       shell.exec(testCaseCmd);
 
       testCounter++;

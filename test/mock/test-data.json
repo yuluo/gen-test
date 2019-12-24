@@ -1,0 +1,11 @@
+{
+    "specUrl": "http://localhost:8080/openapi.json",
+    "preConfigData": {
+        "parameters": {
+            "petId": 1
+        },
+        "headers": {
+            "Authorization": "Bearer ecead255-281b-4fe7-8e2a-4989eb978fbb"
+        }
+    }
+}
