@@ -48,7 +48,7 @@ describe("RequireTestGenerator", () => {
 
   test("should run positive test template", () => {
     const expectedCmd =
-      "hygen test-case new --endpoint /pet --operation post --mediatype application/json --name positive --datafile payload-0.json --codes successCodes";
+      "hygen test-case new --endpoint /pet --operation post --mediatype application/json --name positive-0 --datafile payload-0.json --codes successCodes";
 
     requireTestGenerator.generateTest(
       "/pet",
