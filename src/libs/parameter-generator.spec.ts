@@ -18,13 +18,12 @@ describe("ParameterGenerator", () => {
   });
 
   test("should generate parameter template", () => {
-    const expectedTemplate = 
-      {
-        petId: {
-          in: "path",
-          values: [1]
-        }
-      };
+    const expectedTemplate = {
+      petId: {
+        in: "path",
+        values: [1]
+      }
+    };
 
     const template = parameterGenerator.generateParameters(
       petParameter as OpenAPIV3.ParameterObject[],
@@ -35,13 +34,12 @@ describe("ParameterGenerator", () => {
   });
 
   test("should use preconfiged parameter template", () => {
-    const expectedTemplate = 
-      {
-        petId: {
-          in: "path",
-          values: [2]
-        }
-      };
+    const expectedTemplate = {
+      petId: {
+        in: "path",
+        values: [2]
+      }
+    };
 
     const template = parameterGenerator.generateParameters(
       petParameter as OpenAPIV3.ParameterObject[],

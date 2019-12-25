@@ -39,11 +39,12 @@ export class RequireTestGenerator implements IRequireTestGenerator {
 
     const parameterTemplates = this.parameterGenerator.generateParameters(
       parameters,
-      preConfigParameters);
+      preConfigParameters
+    );
     this.utils.writeFileUtil(
-        `${targetDir}/parameters.json`,
-        JSON.stringify(parameterTemplates, null, 2));
-
+      `${targetDir}/parameters.json`,
+      JSON.stringify(parameterTemplates, null, 2)
+    );
 
     //generate positive test
     let template = this.payloadGenerator.generatePayloadTemplate(schema);
