@@ -25,7 +25,9 @@ export interface IRequireTestGenerator {
     endpoint: string,
     operation: string,
     schema: OpenAPIV3.SchemaObject,
-    mediaType?: string
+    parameters?: OpenAPIV3.ParameterObject[],
+    mediaType?: string,
+    preConfigData?: any
   ): void;
 }
 

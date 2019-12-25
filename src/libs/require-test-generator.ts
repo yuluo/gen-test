@@ -14,14 +14,17 @@ export class RequireTestGenerator implements IRequireTestGenerator {
   public constructor(
     @inject(TYPES.IPayloadGenerator)
     private payloadGenerator: IPayloadGenerator,
-    @inject(TYPES.IUtils) private utils: IUtils
+    @inject(TYPES.IUtils) private utils: IUtils,
+    @inject(TYPES.IParameterGenerator) private parameterGenerator
   ) {}
 
   public generateTest(
     endpoint: string,
     operation: string,
     schema: OpenAPIV3.SchemaObject,
-    mediaType = "application/json"
+    parameters = [],
+    mediaType = "application/json",
+    preConfigData = {}
   ) {
     const hygen = `hygen`;
     const endpointParam = `--endpoint ${endpoint}`;
@@ -33,6 +36,14 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     //scaffolding
     const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} ${mediaTypeParam} --type require`;
     shell.exec(scaffoldingCmd);
+
+    const parameterTemplates = this.parameterGenerator.generateParameters(
+      parameters,
+      preConfigData.parameters);
+    this.utils.writeFileUtil(
+        `${targetDir}/parameter.json`,
+        JSON.stringify(parameterTemplates, null, 2));
+
 
     //generate positive test
     let template = this.payloadGenerator.generatePayloadTemplate(schema);
