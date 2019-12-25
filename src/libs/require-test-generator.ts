@@ -54,7 +54,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
         `${targetDir}/${payloadIndex}.json`,
         JSON.stringify(template[templateKey], null, 2)
       );
-      const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive-${testCounter} --datafile ${payloadIndex}.json --codes successCodes`;
+      const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive-${testCounter} --testcounter ${testCounter} --codes successCodes`;
       shell.exec(testCaseCmd);
 
       testCounter++;
@@ -82,7 +82,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
           `${targetDir}/${payloadFile}`,
           JSON.stringify(payload, null, 2)
         );
-        const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name ${testName} --datafile ${payloadFile} --codes failCodes`;
+        const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name ${testName} --testcounter ${testCounter} --codes failCodes`;
         shell.exec(testCaseCmd);
 
         testCounter++;
