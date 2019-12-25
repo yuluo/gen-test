@@ -5,7 +5,7 @@ export interface IPayloadGenerator {
 }
 
 export interface IParameterGenerator {
-  generateParameters(parameters: OpenAPIV3.ParameterObject[]);
+  generateParameters(parameters: OpenAPIV3.ParameterObject[], preConfigParameter: any);
 }
 
 export interface IRandomGenerator {

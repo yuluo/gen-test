@@ -5,36 +5,53 @@ import { mock, instance, when, anything } from "ts-mockito";
 import { OpenAPIV3 } from "openapi-types";
 import * as petParameter from "../mocks/pet-parameter.json";
 
-
 describe("ParameterGenerator", () => {
-    let parameterGenerator: IParameterGenerator;
-    
-    let mockPayloadGenerator: IPayloadGenerator = mock(PayloadGenerator);
+  let parameterGenerator: IParameterGenerator;
 
-    beforeEach(() => {
-        parameterGenerator = new ParameterGenerator(instance(mockPayloadGenerator));
-        when(mockPayloadGenerator.generatePayloadTemplate(anything())).thenReturn(
-            {
-                "payload0": 1
-            }
-        )
+  let mockPayloadGenerator: IPayloadGenerator = mock(PayloadGenerator);
+
+  beforeEach(() => {
+    parameterGenerator = new ParameterGenerator(instance(mockPayloadGenerator));
+    when(mockPayloadGenerator.generatePayloadTemplate(anything())).thenReturn({
+      payload0: 1
     });
+  });
 
-    test("should return parameter template", () => {
-        const expectedTemplate = [ 
-            { 
-               "petId":{ 
-                  "in":"path",
-                  "values":[ 
-                     1
-                  ]
-               }
-            }
-         ];
-        
-        const template = parameterGenerator.generateParameters(petParameter as OpenAPIV3.ParameterObject[]);
+  test("should generate parameter template", () => {
+    const expectedTemplate = [
+      {
+        petId: {
+          in: "path",
+          values: [1]
+        }
+      }
+    ];
 
-        expect(template).toEqual(expectedTemplate);
-    });
-    
+    const template = parameterGenerator.generateParameters(
+      petParameter as OpenAPIV3.ParameterObject[],
+      {}
+    );
+
+    expect(template).toEqual(expectedTemplate);
+  });
+
+  test("should use preconfiged parameter template", () => {
+    const expectedTemplate = [
+      {
+        petId: {
+          in: "path",
+          values: [2]
+        }
+      }
+    ];
+
+    const template = parameterGenerator.generateParameters(
+      petParameter as OpenAPIV3.ParameterObject[],
+      {
+        petId: 2
+      }
+    );
+
+    expect(template).toEqual(expectedTemplate);
+  });
 });
