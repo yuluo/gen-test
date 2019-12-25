@@ -12,6 +12,14 @@ test("<%= name %>", done => {
 <% } else { %>
     options.body = data;
 <% } %>
+    Object.keys(parameters).forEach(key => {
+        if(parameters[key].in === "path") {
+            options.uri = options.uri.replace(`{${key}}`, parameters[key].values[0]);
+        } else if (parameters[key].in === "header") {
+            options.headers[key] = parameters[key].values[0];
+        }
+    });
+
     request(options, (err, response, body) => {
         expect(response.statusCode).toBeOneOf(globalConfig["<%= codes %>"]);
         done();

@@ -41,7 +41,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
       parameters,
       preConfigParameters);
     this.utils.writeFileUtil(
-        `${targetDir}/parameter.json`,
+        `${targetDir}/parameters.json`,
         JSON.stringify(parameterTemplates, null, 2));
 
 
