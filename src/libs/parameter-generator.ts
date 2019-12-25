@@ -14,8 +14,8 @@ export class ParameterGenerator implements IParameterGenerator {
     parameters: OpenAPIV3.ParameterObject[],
     preConfigParameter: any
   ) {
-    const parameterTemplate = parameters.map(parameter => {
-      let template = {};
+    let template = {};
+    parameters.forEach(parameter => {
       let values = [];
 
       if (preConfigParameter[parameter.name]) {
@@ -32,10 +32,8 @@ export class ParameterGenerator implements IParameterGenerator {
         in: parameter.in,
         values: values
       };
-
-      return template;
     });
 
-    return parameterTemplate;
+    return template;
   }
 }

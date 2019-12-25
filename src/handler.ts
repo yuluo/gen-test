@@ -46,7 +46,7 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
               jsonSchema,
               path[operation].parameters as OpenAPIV3.ParameterObject[],
               mediaType,
-              event.preConfigData
+              event.preConfigData.parameters
             );
           } catch (error) {
             console.error(error);

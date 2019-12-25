@@ -24,7 +24,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     schema: OpenAPIV3.SchemaObject,
     parameters = [],
     mediaType = "application/json",
-    preConfigData = {}
+    preConfigParameters = {}
   ) {
     const hygen = `hygen`;
     const endpointParam = `--endpoint ${endpoint}`;
@@ -39,7 +39,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
 
     const parameterTemplates = this.parameterGenerator.generateParameters(
       parameters,
-      preConfigData.parameters);
+      preConfigParameters);
     this.utils.writeFileUtil(
         `${targetDir}/parameter.json`,
         JSON.stringify(parameterTemplates, null, 2));
