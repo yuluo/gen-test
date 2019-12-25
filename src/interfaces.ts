@@ -4,6 +4,10 @@ export interface IPayloadGenerator {
   generatePayloadTemplate(schema: OpenAPIV3.SchemaObject): any;
 }
 
+export interface IParameterGenerator {
+  generateParameters(parameters: OpenAPIV3.ParameterObject[]);
+}
+
 export interface IRandomGenerator {
   randomBinary(): string;
   randomBoolean(): boolean;
