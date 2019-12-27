@@ -14,14 +14,17 @@ export class RequireTestGenerator implements IRequireTestGenerator {
   public constructor(
     @inject(TYPES.IPayloadGenerator)
     private payloadGenerator: IPayloadGenerator,
-    @inject(TYPES.IUtils) private utils: IUtils
+    @inject(TYPES.IUtils) private utils: IUtils,
+    @inject(TYPES.IParameterGenerator) private parameterGenerator
   ) {}
 
   public generateTest(
     endpoint: string,
     operation: string,
     schema: OpenAPIV3.SchemaObject,
-    mediaType = "application/json"
+    parameters = [],
+    mediaType = "application/json",
+    preConfigParameters = {}
   ) {
     const hygen = `hygen`;
     const endpointParam = `--endpoint ${endpoint}`;
@@ -34,6 +37,15 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} ${mediaTypeParam} --type require`;
     shell.exec(scaffoldingCmd);
 
+    const parameterTemplates = this.parameterGenerator.generateParameters(
+      parameters,
+      preConfigParameters
+    );
+    this.utils.writeFileUtil(
+      `${targetDir}/parameters.json`,
+      JSON.stringify(parameterTemplates, null, 2)
+    );
+
     //generate positive test
     let template = this.payloadGenerator.generatePayloadTemplate(schema);
 
@@ -43,7 +55,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
         `${targetDir}/${payloadIndex}.json`,
         JSON.stringify(template[templateKey], null, 2)
       );
-      const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive-${testCounter} --datafile ${payloadIndex}.json --codes successCodes`;
+      const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive-${testCounter} --testcounter ${testCounter} --codes successCodes`;
       shell.exec(testCaseCmd);
 
       testCounter++;
@@ -71,7 +83,7 @@ export class RequireTestGenerator implements IRequireTestGenerator {
           `${targetDir}/${payloadFile}`,
           JSON.stringify(payload, null, 2)
         );
-        const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name ${testName} --datafile ${payloadFile} --codes failCodes`;
+        const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name ${testName} --testcounter ${testCounter} --codes failCodes`;
         shell.exec(testCaseCmd);
 
         testCounter++;
