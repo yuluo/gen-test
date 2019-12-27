@@ -8,7 +8,8 @@ const utils = require("test-libs/test-utils");
 const testConfig = require("config/test-config.json");
 const preConfigData = require("config/pre-config-data.json");
 const request = require("request");
-const queryString = require('query-string');
+const queryString = require("query-string");
+const parameters = require("./parameters.json");
 
 describe("<%= operation %> <%= endpoint %> <%= type %> test", () => {
   let options = {};
@@ -29,7 +30,6 @@ describe("<%= operation %> <%= endpoint %> <%= type %> test", () => {
     Object.keys(preConfigData.headers).forEach(header => {
       options.headers[header] = preConfigData.headers[header];
     });
-
   });
 
   //test cases
