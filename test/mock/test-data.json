@@ -1,11 +1,11 @@
 {
-    "specUrl": "http://localhost:8080/openapi.json",
+    "specUrl": "/Users/yuanting.luo/workspace/gen-test/test/mock/openapi.json",
     "preConfigData": {
         "parameters": {
             "petId": 1
         },
         "headers": {
-            "Authorization": "Bearer ecead255-281b-4fe7-8e2a-4989eb978fbb"
+            "Authorization": "Bearer f1da9cc0-94a3-4576-aede-242bd2240f82"
         }
     }
 }

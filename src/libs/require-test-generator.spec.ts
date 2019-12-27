@@ -41,41 +41,38 @@ describe("RequireTestGenerator", () => {
 
   test("should run scaffold template", () => {
     const expectedCmd =
-      "hygen scaffold new --endpoint /pet --operation post --mediatype application/json";
+      "hygen scaffold new --endpoint /pet --operation post --mediatype application/x-www-form-urlencoded";
 
     requireTestGenerator.generateTest(
       "/pet",
       "post",
       createPet as OpenAPIV3.OperationObject,
-      petSchema as OpenAPIV3.SchemaObject,
-      "application/json"
+      petSchema as OpenAPIV3.SchemaObject
     );
     expect(execSpy).toHaveBeenCalledWith(expectedCmd);
   });
 
   test("should run positive test template", () => {
     const expectedCmd =
-      "hygen test-case new --endpoint /pet --operation post --mediatype application/json --name positive-0 --testcounter 0 --codes successCodes";
+      "hygen test-case new --endpoint /pet --operation post --mediatype application/x-www-form-urlencoded --name positive-0 --testcounter 0 --codes successCodes";
 
     requireTestGenerator.generateTest(
       "/pet",
       "post",
       createPet as OpenAPIV3.OperationObject,
-      petSchema as OpenAPIV3.SchemaObject,
-      "application/json"
+      petSchema as OpenAPIV3.SchemaObject
     );
     expect(execSpy).toHaveBeenCalledWith(expectedCmd);
   });
 
   test("should run positive test template", () => {
-    const expectedCmd = `hygen test-case new --endpoint /pet --operation post --mediatype application/json --name "negative-0 missing name" --testcounter 1 --codes failCodes`;
+    const expectedCmd = `hygen test-case new --endpoint /pet --operation post --mediatype application/x-www-form-urlencoded --name "negative-0 missing name" --testcounter 1 --codes failCodes`;
 
     requireTestGenerator.generateTest(
       "/pet",
       "post",
       createPet as OpenAPIV3.OperationObject,
-      petSchema as OpenAPIV3.SchemaObject,
-      
+      petSchema as OpenAPIV3.SchemaObject
     );
     expect(execSpy).toHaveBeenCalledWith(expectedCmd);
   });
@@ -88,8 +85,7 @@ describe("RequireTestGenerator", () => {
       "/pet",
       "post",
       createPet as OpenAPIV3.OperationObject,
-      petSchema as OpenAPIV3.SchemaObject,
-      "application/json"
+      petSchema as OpenAPIV3.SchemaObject
     );
 
     verify(

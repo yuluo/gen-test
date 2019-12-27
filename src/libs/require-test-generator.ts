@@ -23,15 +23,21 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     operation: string,
     operationObject: OpenAPIV3.OperationObject,
     schema: OpenAPIV3.SchemaObject,
-    mediaType = "application/json",
     preConfigParameters = {}
   ) {
     const hygen = `hygen`;
     const endpointParam = `--endpoint ${endpoint}`;
     const operationParam = `--operation ${operation}`;
-    const mediaTypeParam = `--mediatype ${mediaType}`;
     const targetDir = `./generated/${endpoint}/${operation}`;
+    const mediaType = Object.keys(
+      (operationObject.requestBody as OpenAPIV3.RequestBodyObject).content
+    )[0];
+
     let testCounter = 0;
+    let mediaTypeParam = "";
+    if (mediaType) {
+      mediaTypeParam = `--mediatype ${mediaType}`;
+    }
 
     //scaffolding
     const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} ${mediaTypeParam}`;
