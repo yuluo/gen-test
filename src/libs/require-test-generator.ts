@@ -30,11 +30,11 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     const endpointParam = `--endpoint ${endpoint}`;
     const operationParam = `--operation ${operation}`;
     const mediaTypeParam = `--mediatype ${mediaType}`;
-    const targetDir = `./generated/${endpoint}/${operation}/require-test`;
+    const targetDir = `./generated/${endpoint}/${operation}`;
     let testCounter = 0;
 
     //scaffolding
-    const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} ${mediaTypeParam} --type require`;
+    const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} ${mediaTypeParam}`;
     shell.exec(scaffoldingCmd);
 
     const parameterTemplates = this.parameterGenerator.generateParameters(

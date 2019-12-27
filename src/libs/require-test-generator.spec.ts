@@ -40,7 +40,7 @@ describe("RequireTestGenerator", () => {
 
   test("should run scaffold template", () => {
     const expectedCmd =
-      "hygen scaffold new --endpoint /pet --operation post --mediatype application/json --type require";
+      "hygen scaffold new --endpoint /pet --operation post --mediatype application/json";
 
     requireTestGenerator.generateTest(
       "/pet",
@@ -78,7 +78,7 @@ describe("RequireTestGenerator", () => {
   });
 
   test("should write positive payload", () => {
-    const expectedPath = "./generated//pet/post/require-test/payload-0.json";
+    const expectedPath = "./generated//pet/post/payload-0.json";
     const expectedPayloadString = JSON.stringify(petTemplate, null, 2);
 
     requireTestGenerator.generateTest(

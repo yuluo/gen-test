@@ -15,8 +15,8 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
 
   const apiObject: OpenAPIV3.Document = await SwaggerParser.dereference(event.specUrl);
   const paths = apiObject.paths;
-  const baseUrls = utils.generateBaseUrls(event.specUrl.toString(), apiObject.servers);
-  //const baseUrls = ["http://localhost:8080/"]
+  //const baseUrls = utils.generateBaseUrls(event.specUrl.toString(), apiObject.servers);
+  const baseUrls = ["http://localhost:8080/v3"]
   const hygen = `hygen`;
   const testConfigCmd = `${hygen} test-config new --baseurl ${baseUrls[0]}`;
 
