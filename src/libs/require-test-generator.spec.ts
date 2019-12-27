@@ -8,6 +8,7 @@ import {
 } from "../interfaces";
 import { RequireTestGenerator } from "./require-test-generator";
 import * as petSchema from "../mocks/pet-schema.json";
+import * as createPet from "../mocks/openapi-create-pet.json";
 import * as petTemplate from "../mocks/pet-template.json";
 import { PayloadGenerator } from "./payload-generator";
 import { Utils } from "./utils";
@@ -45,8 +46,8 @@ describe("RequireTestGenerator", () => {
     requireTestGenerator.generateTest(
       "/pet",
       "post",
+      createPet as OpenAPIV3.OperationObject,
       petSchema as OpenAPIV3.SchemaObject,
-      [],
       "application/json"
     );
     expect(execSpy).toHaveBeenCalledWith(expectedCmd);
@@ -59,8 +60,8 @@ describe("RequireTestGenerator", () => {
     requireTestGenerator.generateTest(
       "/pet",
       "post",
+      createPet as OpenAPIV3.OperationObject,
       petSchema as OpenAPIV3.SchemaObject,
-      [],
       "application/json"
     );
     expect(execSpy).toHaveBeenCalledWith(expectedCmd);
@@ -72,7 +73,9 @@ describe("RequireTestGenerator", () => {
     requireTestGenerator.generateTest(
       "/pet",
       "post",
-      petSchema as OpenAPIV3.SchemaObject
+      createPet as OpenAPIV3.OperationObject,
+      petSchema as OpenAPIV3.SchemaObject,
+      
     );
     expect(execSpy).toHaveBeenCalledWith(expectedCmd);
   });
@@ -84,8 +87,8 @@ describe("RequireTestGenerator", () => {
     requireTestGenerator.generateTest(
       "/pet",
       "post",
+      createPet as OpenAPIV3.OperationObject,
       petSchema as OpenAPIV3.SchemaObject,
-      [],
       "application/json"
     );
 

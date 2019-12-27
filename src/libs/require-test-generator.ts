@@ -21,8 +21,8 @@ export class RequireTestGenerator implements IRequireTestGenerator {
   public generateTest(
     endpoint: string,
     operation: string,
+    operationObject: OpenAPIV3.OperationObject,
     schema: OpenAPIV3.SchemaObject,
-    parameters = [],
     mediaType = "application/json",
     preConfigParameters = {}
   ) {
@@ -37,10 +37,13 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} ${mediaTypeParam}`;
     shell.exec(scaffoldingCmd);
 
-    const parameterTemplates = this.parameterGenerator.generateParameters(
-      parameters,
-      preConfigParameters
-    );
+    let parameterTemplates = {};
+    if (operationObject.parameters) {
+      parameterTemplates = this.parameterGenerator.generateParameters(
+        operationObject.parameters,
+        preConfigParameters
+      );
+    }
     this.utils.writeFileUtil(
       `${targetDir}/parameters.json`,
       JSON.stringify(parameterTemplates, null, 2)

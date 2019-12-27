@@ -43,8 +43,8 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
             requireTestGenerator.generateTest(
               pathKey,
               operation,
+              path[operation],
               jsonSchema,
-              path[operation].parameters as OpenAPIV3.ParameterObject[],
               mediaType,
               event.preConfigData.parameters
             );
