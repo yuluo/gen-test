@@ -15,8 +15,8 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
 
   const apiObject: OpenAPIV3.Document = await SwaggerParser.dereference(event.specUrl);
   const paths = apiObject.paths;
-  const baseUrls = utils.generateBaseUrls(event.specUrl.toString(), apiObject.servers);
-  //const baseUrls = ["http://localhost:8080/"]
+  //const baseUrls = utils.generateBaseUrls(event.specUrl.toString(), apiObject.servers);
+  const baseUrls = ["http://localhost:8080/v3"]
   const hygen = `hygen`;
   const testConfigCmd = `${hygen} test-config new --baseurl ${baseUrls[0]}`;
 
@@ -30,27 +30,16 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
     const path = paths[pathKey];
     Object.keys(path).forEach(operation => {
       if (operation === "post") {
-        const jsonSchema: OpenAPIV3.SchemaObject = jsonpath.query(
-          path[operation],
-          "$['requestBody']['content'][*]['schema']"
-        )[0];
         console.log(`${operation} ${pathKey}`);
-        if (jsonSchema) {
-          try {
-            const requestBody: OpenAPIV3.RequestBodyObject = path[operation]
-              .requestBody as OpenAPIV3.RequestBodyObject;
-            const mediaType = Object.keys(requestBody.content)[0];
-            requireTestGenerator.generateTest(
-              pathKey,
-              operation,
-              jsonSchema,
-              path[operation].parameters as OpenAPIV3.ParameterObject[],
-              mediaType,
-              event.preConfigData.parameters
-            );
-          } catch (error) {
-            console.error(error);
-          }
+        try {
+          requireTestGenerator.generateTest(
+            pathKey,
+            operation,
+            path[operation],
+            event.preConfigData.parameters
+          );
+        } catch (error) {
+          console.error(error);
         }
       }
     });

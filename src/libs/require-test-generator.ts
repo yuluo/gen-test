@@ -21,73 +21,86 @@ export class RequireTestGenerator implements IRequireTestGenerator {
   public generateTest(
     endpoint: string,
     operation: string,
-    schema: OpenAPIV3.SchemaObject,
-    parameters = [],
-    mediaType = "application/json",
+    operationObject: OpenAPIV3.OperationObject,
     preConfigParameters = {}
   ) {
     const hygen = `hygen`;
     const endpointParam = `--endpoint ${endpoint}`;
     const operationParam = `--operation ${operation}`;
-    const mediaTypeParam = `--mediatype ${mediaType}`;
-    const targetDir = `./generated/${endpoint}/${operation}/require-test`;
+    const targetDir = `./generated/${endpoint}/${operation}`;
+    const requestBody: OpenAPIV3.RequestBodyObject = operationObject.requestBody as OpenAPIV3.RequestBodyObject;
+
     let testCounter = 0;
+    let mediaTypeParam = "";
+    if (requestBody) {
+      mediaTypeParam = `--mediatype ${Object.keys(requestBody.content)[0]}`;
+    }
 
     //scaffolding
-    const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} ${mediaTypeParam} --type require`;
+    const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} ${mediaTypeParam}`;
     shell.exec(scaffoldingCmd);
 
-    const parameterTemplates = this.parameterGenerator.generateParameters(
-      parameters,
-      preConfigParameters
-    );
+    let parameterTemplates = {};
+    if (operationObject.parameters) {
+      parameterTemplates = this.parameterGenerator.generateParameters(
+        operationObject.parameters,
+        preConfigParameters
+      );
+    }
     this.utils.writeFileUtil(
       `${targetDir}/parameters.json`,
       JSON.stringify(parameterTemplates, null, 2)
     );
 
-    //generate positive test
-    let template = this.payloadGenerator.generatePayloadTemplate(schema);
+    const schema: OpenAPIV3.SchemaObject = jsonpath.query(
+      operationObject,
+      "$['requestBody']['content'][*]['schema']"
+    )[0];
 
-    Object.keys(template).forEach(templateKey => {
-      const payloadIndex = `payload-${testCounter}`;
-      this.utils.writeFileUtil(
-        `${targetDir}/${payloadIndex}.json`,
-        JSON.stringify(template[templateKey], null, 2)
-      );
-      const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive-${testCounter} --testcounter ${testCounter} --codes successCodes`;
-      shell.exec(testCaseCmd);
+    if (schema) {
+      //generate positive test
+      let template = this.payloadGenerator.generatePayloadTemplate(schema);
 
-      testCounter++;
-    });
-
-    let requiredSet = new Set();
-    const requiredAttributes = jsonpath.query(schema, "$..required");
-
-    requiredAttributes.forEach(requiredAttribute => {
-      requiredAttribute.forEach(attribute => {
-        requiredSet.add(attribute);
-      });
-    });
-
-    //generate negative test for-loop
-    Array.from(requiredSet.values()).forEach(
-      (property: string, index: number) => {
-        const payloadFile = `payload-${testCounter}.json`;
-        const testName = `"negative-${index} missing ${property}"`;
-        let payload = { ...template.payload0 };
-        delete payload[property];
-
-        //TODO: refactor to use hygon
+      Object.keys(template).forEach(templateKey => {
+        const payloadIndex = `payload-${testCounter}`;
         this.utils.writeFileUtil(
-          `${targetDir}/${payloadFile}`,
-          JSON.stringify(payload, null, 2)
+          `${targetDir}/${payloadIndex}.json`,
+          JSON.stringify(template[templateKey], null, 2)
         );
-        const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name ${testName} --testcounter ${testCounter} --codes failCodes`;
+        const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive-${testCounter} --testcounter ${testCounter} --codes successCodes`;
         shell.exec(testCaseCmd);
 
         testCounter++;
-      }
-    );
+      });
+
+      let requiredSet = new Set();
+      const requiredAttributes = jsonpath.query(schema, "$..required");
+
+      requiredAttributes.forEach(requiredAttribute => {
+        requiredAttribute.forEach(attribute => {
+          requiredSet.add(attribute);
+        });
+      });
+
+      //generate negative test for-loop
+      Array.from(requiredSet.values()).forEach(
+        (property: string, index: number) => {
+          const payloadFile = `payload-${testCounter}.json`;
+          const testName = `"negative-${index} missing ${property}"`;
+          let payload = { ...template.payload0 };
+          delete payload[property];
+
+          //TODO: refactor to use hygon
+          this.utils.writeFileUtil(
+            `${targetDir}/${payloadFile}`,
+            JSON.stringify(payload, null, 2)
+          );
+          const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name ${testName} --testcounter ${testCounter} --codes failCodes`;
+          shell.exec(testCaseCmd);
+
+          testCounter++;
+        }
+      );
+    }
   }
 }
