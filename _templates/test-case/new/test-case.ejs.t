@@ -14,8 +14,8 @@ test("<%= name %>", done => {
 <% } %>
     Object.keys(parameters).forEach(key => {
         let value = parameters[key].values[0];
-        if( parameters[key].values["<% testcounter %>"] ) {
-            value = parameters[key].values["<% testcounter %>"];
+        if( parameters[key].values["<%= testcounter %>"] ) {
+            value = parameters[key].values["<%= testcounter %>"];
         }
 
         if(parameters[key].in === "path") {
