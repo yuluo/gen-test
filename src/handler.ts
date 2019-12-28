@@ -30,23 +30,16 @@ export const parseSpec: Handler = async (event: APIGatewayEvent) => {
     const path = paths[pathKey];
     Object.keys(path).forEach(operation => {
       if (operation === "post") {
-        const jsonSchema: OpenAPIV3.SchemaObject = jsonpath.query(
-          path[operation],
-          "$['requestBody']['content'][*]['schema']"
-        )[0];
         console.log(`${operation} ${pathKey}`);
-        if (jsonSchema) {
-          try {
-            requireTestGenerator.generateTest(
-              pathKey,
-              operation,
-              path[operation],
-              jsonSchema,
-              event.preConfigData.parameters
-            );
-          } catch (error) {
-            console.error(error);
-          }
+        try {
+          requireTestGenerator.generateTest(
+            pathKey,
+            operation,
+            path[operation],
+            event.preConfigData.parameters
+          );
+        } catch (error) {
+          console.error(error);
         }
       }
     });
