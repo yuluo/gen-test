@@ -1,5 +1,5 @@
 ---
-to: generated/<%= endpoint %>/<%= operation %>/<%= type %>-test/<%= type %>.test.js
+to: generated/<%= endpoint %>/<%= operation %>/api.test.js
 ---
 "use strict"
 const globalConfig = require("config/global-config.json");
@@ -11,7 +11,7 @@ const request = require("request");
 const queryString = require("query-string");
 const parameters = require("./parameters.json");
 
-describe("<%= operation %> <%= endpoint %> <%= type %> test", () => {
+describe("<%= operation %> <%= endpoint %> test", () => {
   let options = {};
 
   beforeAll(async () => {
