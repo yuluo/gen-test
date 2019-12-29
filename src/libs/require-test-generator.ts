@@ -62,9 +62,8 @@ export class RequireTestGenerator implements IRequireTestGenerator {
       let template = this.payloadGenerator.generatePayloadTemplate(schema);
 
       Object.keys(template).forEach(templateKey => {
-        const payloadIndex = `payload-${testCounter}`;
         this.utils.writeFileUtil(
-          `${targetDir}/${payloadIndex}.json`,
+          `${targetDir}/payload-${testCounter}.json`,
           JSON.stringify(template[templateKey], null, 2)
         );
         const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive-${testCounter} --testcounter ${testCounter} --codes successCodes`;
@@ -90,7 +89,6 @@ export class RequireTestGenerator implements IRequireTestGenerator {
           let payload = { ...template.payload0 };
           delete payload[property];
 
-          //TODO: refactor to use hygon
           this.utils.writeFileUtil(
             `${targetDir}/${payloadFile}`,
             JSON.stringify(payload, null, 2)
