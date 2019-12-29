@@ -12,6 +12,7 @@ test("<%= name %>", done => {
 <% } else { %>
     options.body = data;
 <% } %>
+    const parameters = testCaseData.parameters;
     Object.keys(parameters).forEach(key => {
         let value = parameters[key].values[0];
         if( parameters[key].values["<%= testcounter %>"] ) {

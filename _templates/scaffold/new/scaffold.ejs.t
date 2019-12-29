@@ -9,7 +9,7 @@ const testConfig = require("config/test-config.json");
 const preConfigData = require("config/pre-config-data.json");
 const request = require("request");
 const queryString = require("query-string");
-const parameters = require("./parameters.json");
+const testCaseData = require("./test-case-data.json");
 
 describe("<%= operation %> <%= endpoint %> test", () => {
   let options = {};

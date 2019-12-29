@@ -40,16 +40,19 @@ export class RequireTestGenerator implements IRequireTestGenerator {
     const scaffoldingCmd = `${hygen} scaffold new ${endpointParam} ${operationParam} ${mediaTypeParam}`;
     shell.exec(scaffoldingCmd);
 
-    let parameterTemplates = {};
+    let testCaseData = {
+      parameters: {}
+    };
     if (operationObject.parameters) {
-      parameterTemplates = this.parameterGenerator.generateParameters(
+      testCaseData.parameters = this.parameterGenerator.generateParameters(
         operationObject.parameters,
         preConfigParameters
       );
     }
+
     this.utils.writeFileUtil(
-      `${targetDir}/parameters.json`,
-      JSON.stringify(parameterTemplates, null, 2)
+      `${targetDir}/test-case-data.json`,
+      JSON.stringify(testCaseData, null, 2)
     );
 
     const schema: OpenAPIV3.SchemaObject = jsonpath.query(
