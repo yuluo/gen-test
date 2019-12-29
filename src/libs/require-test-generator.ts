@@ -62,8 +62,14 @@ export class RequireTestGenerator implements IRequireTestGenerator {
       let template = this.payloadGenerator.generatePayloadTemplate(schema);
 
       Object.keys(template).forEach(templateKey => {
+<<<<<<< HEAD
         this.utils.writeFileUtil(
           `${targetDir}/payload-${testCounter}.json`,
+=======
+        const payloadIndex = `payload-${testCounter}`;
+        this.utils.writeFileUtil(
+          `${targetDir}/${payloadIndex}.json`,
+>>>>>>> master
           JSON.stringify(template[templateKey], null, 2)
         );
         const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive-${testCounter} --testcounter ${testCounter} --codes successCodes`;
