@@ -112,8 +112,15 @@ describe("RequireTestGenerator", () => {
   });
 
   test("should write parameters template", () => {
-    const expectedPath = "./generated//pet/post/parameters.json";
-    const expectedParameterString = JSON.stringify(mockParameter, null, 2);
+    const expectedPath = "./generated//pet/post/test-case-data.json";
+    const expectedTestCaseData = {
+      parameters: mockParameter
+    };
+    const expectedTestCaseString = JSON.stringify(
+      expectedTestCaseData,
+      null,
+      2
+    );
 
     requireTestGenerator.generateTest(
       "/pet",
@@ -122,13 +129,19 @@ describe("RequireTestGenerator", () => {
     );
 
     verify(
-      mockUtils.writeFileUtil(expectedPath, expectedParameterString)
+      mockUtils.writeFileUtil(expectedPath, expectedTestCaseString)
     ).called();
   });
 
   test("should write empty parameters template", () => {
-    const expectedPath = "./generated//pet/post/parameters.json";
-    const expectedParameterString = JSON.stringify({}, null, 2);
+    const expectedPath = "./generated//pet/post/test-case-data.json";
+    const expectedParameterString = JSON.stringify(
+      {
+        parameters: {}
+      },
+      null,
+      2
+    );
     const petOperation = { ...createPet };
     delete petOperation.parameters;
 
