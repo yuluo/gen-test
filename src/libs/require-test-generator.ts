@@ -49,7 +49,6 @@ export class RequireTestGenerator implements IRequireTestGenerator {
         preConfigParameters
       );
     }
-
     this.utils.writeFileUtil(
       `${targetDir}/test-case-data.json`,
       JSON.stringify(testCaseData, null, 2)
@@ -60,22 +59,13 @@ export class RequireTestGenerator implements IRequireTestGenerator {
       "$['requestBody']['content'][*]['schema']"
     )[0];
 
+    let template = {
+      payload0: {}
+    };
+    let requiredSet = new Set();
     if (schema) {
       //generate positive test
-      let template = this.payloadGenerator.generatePayloadTemplate(schema);
-
-      Object.keys(template).forEach(templateKey => {
-        this.utils.writeFileUtil(
-          `${targetDir}/payload-${testCounter}.json`,
-          JSON.stringify(template[templateKey], null, 2)
-        );
-        const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive-${testCounter} --testcounter ${testCounter} --codes successCodes`;
-        shell.exec(testCaseCmd);
-
-        testCounter++;
-      });
-
-      let requiredSet = new Set();
+      template = this.payloadGenerator.generatePayloadTemplate(schema);
       const requiredAttributes = jsonpath.query(schema, "$..required");
 
       requiredAttributes.forEach(requiredAttribute => {
@@ -83,25 +73,36 @@ export class RequireTestGenerator implements IRequireTestGenerator {
           requiredSet.add(attribute);
         });
       });
-
-      //generate negative test for-loop
-      Array.from(requiredSet.values()).forEach(
-        (property: string, index: number) => {
-          const payloadFile = `payload-${testCounter}.json`;
-          const testName = `"negative-${index} missing ${property}"`;
-          let payload = { ...template.payload0 };
-          delete payload[property];
-
-          this.utils.writeFileUtil(
-            `${targetDir}/${payloadFile}`,
-            JSON.stringify(payload, null, 2)
-          );
-          const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name ${testName} --testcounter ${testCounter} --codes failCodes`;
-          shell.exec(testCaseCmd);
-
-          testCounter++;
-        }
-      );
     }
+
+    Object.keys(template).forEach(templateKey => {
+      this.utils.writeFileUtil(
+        `${targetDir}/payload-${testCounter}.json`,
+        JSON.stringify(template[templateKey], null, 2)
+      );
+      const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name positive-${testCounter} --testcounter ${testCounter} --codes successCodes`;
+      shell.exec(testCaseCmd);
+
+      testCounter++;
+    });
+
+    //generate negative test for-loop
+    Array.from(requiredSet.values()).forEach(
+      (property: string, index: number) => {
+        const payloadFile = `payload-${testCounter}.json`;
+        const testName = `"negative-${index} missing ${property}"`;
+        let payload = { ...template.payload0 };
+        delete payload[property];
+
+        this.utils.writeFileUtil(
+          `${targetDir}/${payloadFile}`,
+          JSON.stringify(payload, null, 2)
+        );
+        const testCaseCmd = `${hygen} test-case new ${endpointParam} ${operationParam} ${mediaTypeParam} --name ${testName} --testcounter ${testCounter} --codes failCodes`;
+        shell.exec(testCaseCmd);
+
+        testCounter++;
+      }
+    );
   }
 }
